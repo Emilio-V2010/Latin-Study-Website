@@ -1,26 +1,37 @@
 const LATIN_VOCABULARY = [
   {
-    latin: "puella",
-    english: "girl",
-    type: "noun",
+    headword: "rosa",
+    genitive: "rosae",
     gender: "feminine",
-    genitive: "puellae",
+    partOfSpeech: "noun",
     declension: 1,
+    definitions: ["rose"],
     era: "Classical"
   },
   {
-    latin: "amo",
-    english: "to love",
-    type: "verb",
-    principalParts: "amo, amare, amavi, amatum",
-    conjugation: 1,
-    era: "Classical"
-  },
-  {
-    latin: "bonus",
-    english: "good",
-    type: "adjective",
+    headword: "servus",
+    genitive: "servi",
     gender: "masculine",
+    partOfSpeech: "noun",
+    declension: 2,
+    definitions: ["slave", "servant"],
+    era: "Classical"
+  },
+  {
+    headword: "bellum",
+    genitive: "belli",
+    gender: "neuter",
+    partOfSpeech: "noun",
+    declension: 2,
+    definitions: ["war"],
+    era: "Classical"
+  },
+  {
+    headword: "amo",
+    principalParts: ["amo", "amare", "amavi", "amatum"],
+    partOfSpeech: "verb",
+    conjugation: 1,
+    definitions: ["love", "like"],
     era: "Classical"
   }
 ];
