@@ -329,13 +329,21 @@ footer p{margin:0; max-width:38rem}
 .hits{margin:.75rem 0 0}
 .opts.kcases{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.4rem}.opts.kcases .opt{margin:0;text-align:center}.kstep{margin:.6rem 0 .2rem}
 .voiceseg{margin-top:.4rem;flex-wrap:wrap}.voiceseg .seglab{align-self:center;margin-right:.4rem;font-size:.85rem;opacity:.75}
+.modemenu{margin-top:1.1rem}
+.modeopen .modecur{color:var(--muted); margin-left:.5rem}
+.modeopen .modecur:before{content:"· "}
+.tabs.modes{display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:.4rem; margin-top:.6rem; border:1px solid var(--line); border-radius:12px; padding:.6rem; background:var(--paper); overflow:visible}
+.tabs.modes[hidden]{display:none}
+.tabs.modes button, .tabs.modes button:first-child{border:1px solid var(--line); border-radius:8px; padding:.55rem .7rem; margin:0; text-align:left; color:var(--ink); white-space:normal}
+.tabs.modes button[aria-current="page"]{border-color:var(--purple); background:var(--purple); color:var(--on-purple)}
+.tabs.modes button[aria-current="page"] .badge{background:var(--on-purple); color:var(--purple)}
 </style>
 </head>
 <body>
 <div class="page">
   <header class="mast">
     <h1>Tabula</h1>
-    <p>Latin practice for chapters 1 to 58 of Jenney's <i>First Year Latin</i>, with word lists for all 60. Macrons are optional when you type.</p>
+    <p>Latin practice for chapters 1 to 60 of Jenney's <i>First Year Latin</i>, with word lists for all 60. Macrons are optional when you type.</p>
     <div id="streak" class="streak"></div>
   </header>
 
@@ -346,7 +354,9 @@ footer p{margin:0; max-width:38rem}
       <div id="chgrid" class="chgrid" role="group" aria-label="Pick chapters" hidden></div>
       <span class="chnote" id="chnote" aria-live="polite"></span>
     </div>
-    <nav class="tabs" aria-label="Study mode">
+    <div class="modemenu">
+    <button type="button" id="modeopen" class="chopen modeopen" aria-expanded="false" aria-controls="modes"><span aria-hidden="true">☰</span> Settings<span id="modecur" class="modecur"></span><span class="chev" aria-hidden="true"> ▾</span></button>
+    <nav id="modes" class="tabs modes" aria-label="Study mode" hidden>
       <button type="button" data-mode="sentences">Sentences</button>
       <button type="button" data-mode="vocab">Vocabulary</button>
       <button type="button" data-mode="parts">Bases &amp; parts</button>
@@ -358,6 +368,7 @@ footer p{margin:0; max-width:38rem}
       <button type="button" data-mode="map">Map</button>
       <button type="button" data-mode="review">Review</button>
     </nav>
+    </div>
   </div>
 
   <main id="stage"></main>
@@ -382,7 +393,7 @@ const low = s => s === 'I' || /^I /.test(s) ? s : s.charAt(0).toLowerCase() + s.
 function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
 /* ---------- saved progress (this browser only) ---------- */
-const CHAPTERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58];
+const CHAPTERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60];
 const LAST = CHAPTERS[CHAPTERS.length - 1];
 const KEY = 'tabula-jenney-v1';
 let saved = {};
@@ -716,6 +727,11 @@ const NOUNS = [
   (n => { n.forms.sg = ['quisquam','cuiusquam','cuiquam','quemquam','quōquam']; n.forms.pl = []; n.head = 'quisquam, quicquam'; n.pron = true; return n; })(N3(58,'quisquam','cuiusquam','m.','anyone (after a negative)',{one:'anyone', noPl:true})),
   (n => { n.forms.sg = ['quicquam','cuiusquam','cuiquam','quicquam','quōquam']; n.forms.pl = []; n.head = 'quicquam (neuter of quisquam)'; n.pron = true; return n; })(N3(58,'quicquam','cuiusquam','n.','anything (after a negative)',{one:'anything', noPl:true})),
   (n => { n.forms.sg = ['quisque','cuiusque','cuique','quemque','quōque']; n.forms.pl = []; n.head = 'quisque, quidque'; n.pron = true; return n; })(N3(58,'quisque','cuiusque','m.','each one, everyone',{one:'each one', noPl:true})),
+  N(59,'beneficium','benefici','n.','kindness, favor, benefit',{one:'kindness', many:'kindnesses'}), N3(59,'cohors','cohortis','f.','cohort (a tenth of a legion)',{i:true, one:'cohort'}), N3(59,'custōs','custōdis','m.','guard',{one:'guard'}),
+  N4(59,'equitātus','m.','cavalry',{one:'cavalry', noPl:true}), N3(59,'explōrātor','explōrātōris','m.','scout, spy',{one:'scout'}), N3(59,'īnfāns','īnfantis','m.','infant, child',{i:true, one:'infant'}),
+  N(59,'lacrima','lacrim','f.','tear',{one:'tear'}), N3(59,'laus','laudis','f.','praise, glory',{one:'praise', noPl:true}), N3(59,'lītus','lītoris','n.','shore, beach',{one:'shore'}),
+  N4(59,'magistrātus','m.','magistrate; public office',{one:'magistrate'}), N3(59,'mulier','mulieris','f.','woman; wife',{one:'woman', many:'women'}), N3(59,'opīniō','opīniōnis','f.','opinion, belief, reputation',{one:'opinion'}),
+  N3(59,'plēbs','plēbis','f.','the common people',{one:'common people', noPl:true}), N(59,'rēmus','rēm','m.','oar'), N(59,'saxum','sax','n.','rock, stone',{one:'rock'}), N3(59,'uxor','uxōris','f.','wife',{one:'wife', many:'wives'}),
   N3(58,'adulēscēns','adulēscentis','m.','young man',{one:'young man', many:'young men'}), N(58,'grātia','grāti','f.','favor, gratitude; grātiās agere, to thank',{one:'favor'}), N3(58,'mōs','mōris','m.','custom; pl. character',{one:'custom'}),
   N3(58,'quiēs','quiētis','f.','rest, quiet',{noPl:true, one:'rest'}), N3(58,'rūmor','rūmōris','m.','rumor',{}), N3(58,'sanguis','sanguinis','m.','blood',{noPl:true, one:'blood'}), N3(58,'voluntās','voluntātis','f.','will, wish; goodwill',{one:'will'}),
   N3(56,'agmen','agminis','n.','marching column, army on the march',{one:'column'}), N(56,'ancora','ancor','f.','anchor'), N3(56,'auctor','auctōris','m.','author, founder; adviser',{one:'author'}),
@@ -1064,6 +1080,17 @@ const VERBS = [
     tfx:{ impf:['praeeram','praeerās','praeerat','praeerāmus','praeerātis','praeerant'], fut:['praeerō','praeeris','praeerit','praeerimus','praeeritis','praeerunt'] }, imp:['praees','praeeste']},
   {ch:32, key:'adsum', lemma:'adsum', inf:'adesse', en:'be present, be here', irregular:true, be:'present', beRe:'(?:present|here|there)', forms:['adsum','ades','adest','adsumus','adestis','adsunt'],
     tfx:{ impf:['aderam','aderās','aderat','aderāmus','aderātis','aderant'], fut:['aderō','aderis','aderit','aderimus','aderitis','aderunt'] }, imp:['ades','adeste']},
+  {ch:60, key:'ascendo', lemma:'ascendō', stem:'ascend', inf:'ascendere', en:'climb, climb up, ascend', cj:3},
+  {ch:60, key:'coniungo', lemma:'coniungō', stem:'coniung', inf:'coniungere', en:'join, unite', cj:3},
+  {ch:60, key:'conscendo', lemma:'cōnscendō', stem:'cōnscend', inf:'cōnscendere', en:'climb; board (a ship)', cj:3},
+  {ch:60, key:'descendo', lemma:'dēscendō', stem:'dēscend', inf:'dēscendere', en:'come down, descend', cj:3},
+  {ch:60, key:'reficio', lemma:'reficiō', stem:'refic', inf:'reficere', en:'repair, restore', cj:3, io:true},
+  {ch:60, key:'reicio', lemma:'reiciō', stem:'reic', inf:'reicere', en:'throw back, drive back', cj:3, io:true},
+  {ch:60, key:'repello', lemma:'repellō', stem:'repell', inf:'repellere', en:'drive back, repel', cj:3},
+  {ch:60, key:'reperio', lemma:'reperiō', stem:'reper', inf:'reperīre', en:'find, discover', cj:4},
+  {ch:60, key:'taceo', lemma:'taceō', stem:'tac', inf:'tacēre', en:'be silent, keep quiet', cj:2},
+  {ch:60, key:'tribuo', lemma:'tribuō', stem:'tribu', inf:'tribuere', en:'assign, grant, give', cj:3},
+  {ch:60, key:'verto', lemma:'vertō', stem:'vert', inf:'vertere', en:'turn', cj:3},
   {ch:58, key:'consuesco', lemma:'cōnsuēscō', stem:'cōnsuēsc', inf:'cōnsuēscere', en:'become accustomed; perfect: be accustomed', cj:3},
   {ch:58, key:'iaceo', lemma:'iaceō', stem:'iac', inf:'iacēre', en:'lie (be lying down)', cj:2},
   {ch:58, key:'incolo', lemma:'incolō', stem:'incol', inf:'incolere', en:'live in, inhabit', cj:3},
@@ -1204,6 +1231,7 @@ const PP = { amo:['amāvī','amātus'], do:['dedī','datus'], laudo:['laudāvī'
   adduco:['addūxī','adductus'], circumvenio:['circumvēnī','circumventus'], commoveo:['commōvī','commōtus'], compleo:['complēvī','complētus'], conspicio:['cōnspexī','cōnspectus'], deficio:['dēfēcī','dēfectus'], dimitto:['dīmīsī','dīmissus'],
   enuntio:['ēnūntiāvī','ēnūntiātus'], expono:['exposuī','expositus'], incito:['incitāvī','incitātus'], intermitto:['intermīsī','intermissus'], occido:['occīdī','occīsus'], opprimo:['oppressī','oppressus'], traduco:['trādūxī','trāductus'],
   armo:['armāvī','armātus'], erro:['errāvī','errātus'], perficio:['perfēcī','perfectus'], perterreo:['perterruī','perterritus'], consisto:['cōnstitī','cōnstitus'],
+  ascendo:['ascendī','ascēnsus'], coniungo:['coniūnxī','coniūnctus'], conscendo:['cōnscendī','cōnscēnsus'], descendo:['dēscendī','dēscēnsus'], reficio:['refēcī','refectus'], reicio:['reiēcī','reiectus'], repello:['reppulī','repulsus'], reperio:['repperī','repertus'], taceo:['tacuī','tacitus'], tribuo:['tribuī','tribūtus'], verto:['vertī','versus'],
   consuesco:['cōnsuēvī','cōnsuētus'], iaceo:['iacuī'], incolo:['incoluī'], iuvo:['iūvī','iūtus'], rideo:['rīsī','rīsus'], rumpo:['rūpī','ruptus'], sumo:['sūmpsī','sūmptus'], aperio:['aperuī','apertus'],
   consulo:['cōnsuluī','cōnsultus'], eripio:['ēripuī','ēreptus'], noceo:['nocuī','nocitūrus'], parco:['pepercī','parsūrus'], pareo:['pāruī','pāritūrus'], placeo:['placuī','placitus'], praeficio:['praefēcī','praefectus'], provideo:['prōvīdī','prōvīsus'], rapio:['rapuī','raptus'], resisto:['restitī'], solvo:['solvī','solūtus'], studeo:['studuī'],
   augeo:['auxī','auctus'], consido:['cōnsēdī','cōnsessus'], doleo:['doluī','dolitus'], exploro:['explōrāvī','explōrātus'], perturbo:['perturbāvī','perturbātus'], suscipio:['suscēpī','susceptus'], tego:['tēxī','tēctus'], vivo:['vīxī','vīctus'],
@@ -1217,7 +1245,7 @@ const PERF_END = ['ī','istī','it','imus','istis','ērunt'], PLUP_END = ['eram'
 const TENSES = ['pres','impf','fut','perf','plup','futp'], PERF_SYS = ['perf','plup','futp'];
 const SUMF = { perf:['sum','es','est','sumus','estis','sunt'], plup:['eram','erās','erat','erāmus','erātis','erant'], futp:['erō','eris','erit','erimus','eritis','erunt'] };
 /* verbs with no personal passive: intransitives, sum, and habeō (whose passive means "be considered") */
-const NO_PASSIVE = ['iaceo','rideo','incolo','noceo','parco','pareo','placeo','resisto','studeo','desum','praesum','consido','doleo','vivo','cado','hiemo','appropinquo','disco','permitto','accido','impero','persuadeo','mando','oro','erro','consisto','deficio','accedo','nescio','pertineo','nego','spero','cresco','desisto','dubito','ludo','valeo','possum','absum','adsum','convenio','dormio','pervenio','venio','sum','habeo','facio','fugio','curro','surgo','cedo','contendo','discedo','excedo','pugno','navigo','habito','laboro','ambulo','clamo','sto','volo','maneo','sedeo','respondeo'];
+const NO_PASSIVE = ['descendo','taceo','iaceo','rideo','incolo','noceo','parco','pareo','placeo','resisto','studeo','desum','praesum','consido','doleo','vivo','cado','hiemo','appropinquo','disco','permitto','accido','impero','persuadeo','mando','oro','erro','consisto','deficio','accedo','nescio','pertineo','nego','spero','cresco','desisto','dubito','ludo','valeo','possum','absum','adsum','convenio','dormio','pervenio','venio','sum','habeo','facio','fugio','curro','surgo','cedo','contendo','discedo','excedo','pugno','navigo','habito','laboro','ambulo','clamo','sto','volo','maneo','sedeo','respondeo'];
 const PEND_P = { pres:['-or','-ris','-tur','-mur','-minī','-ntur'], impf:['-bar','-bāris','-bātur','-bāmur','-bāminī','-bantur'], fut:['-bor','-beris','-bitur','-bimur','-biminī','-buntur'] };
 const TNAME = { pres:'present', impf:'imperfect', fut:'future', perf:'perfect', plup:'pluperfect', futp:'future perfect' };
 const TEND = { pres:['ō','s','t','mus','tis','nt'], impf:IMPF_END, fut:FUT_END, perf:PERF_END, plup:PLUP_END, futp:FUTP_END };
@@ -1311,7 +1339,12 @@ const DEPS = [
   {ch:51, key:'vereor', lemma:'vereor', stem:'ver', cj:2, ppt:'veritus', en:'fear; respect'},
   {ch:55, key:'orior', lemma:'orior', stem:'or', cj:3, io:true, c4:true, ppt:'ortus', en:'rise, arise; begin'},
   {ch:55, key:'potior', lemma:'potior', stem:'pot', cj:3, io:true, c4:true, ppt:'potītus', en:'get possession of (+ ablative)'},
-  {ch:55, key:'utor', lemma:'ūtor', stem:'ūt', cj:3, ppt:'ūsus', en:'use (+ ablative)'} ];
+  {ch:55, key:'utor', lemma:'ūtor', stem:'ūt', cj:3, ppt:'ūsus', en:'use (+ ablative)'},
+  {ch:60, key:'mereor', lemma:'mereor', stem:'mer', cj:2, ppt:'meritus', en:'deserve, earn'},
+  {ch:60, key:'miror', lemma:'mīror', stem:'mīr', cj:1, ppt:'mīrātus', en:'wonder at, admire'},
+  {ch:60, key:'morior', lemma:'morior', stem:'mor', cj:3, io:true, ppt:'mortuus', fap:'moritūrus', en:'die'},
+  {ch:60, key:'nascor', lemma:'nāscor', stem:'nāsc', cj:3, ppt:'nātus', en:'be born', be:'born'},
+  {ch:60, key:'revertor', lemma:'revertor', stem:'revert', cj:3, ppt:'reversus', en:'turn back, return'} ];
 DEPS.forEach(v => {
   const ist = v.stem + (v.cj === 1 ? 'ā' : v.cj === 2 ? 'ē' : v.io ? 'iē' : 'ē'), fakeInf = v.stem + (v.cj === 1 ? 'āre' : v.cj === 2 ? 'ēre' : 'ere');
   v.inf = v.stem + (v.cj === 1 ? 'ārī' : v.cj === 2 ? 'ērī' : 'ī'); v.dep = true;
@@ -1325,7 +1358,7 @@ DEPS.forEach(v => {
   v.tf.sperf = SUBJ_SUM.spres.map((f, i) => v.ptc.forms.m[i < 3 ? 'sg' : 'pl'][0] + ' ' + f); v.tf.splup = SUBJ_SUM.simpf.map((f, i) => v.ptc.forms.m[i < 3 ? 'sg' : 'pl'][0] + ' ' + f);
   v.imp = [fakeInf, v.stem + (v.cj === 1 ? 'āminī' : v.cj === 2 ? 'ēminī' : 'iminī')];
   v.forms = v.tf.pres; v.pp = [v.lemma, v.inf, v.ppt + ' sum']; v.head = v.pp.join(', ');
-  v.infs = { pres:v.inf, perf:v.ppt + ' esse', fut:v.ppt.slice(0, -2) + 'ūrus esse' }; v.tfp = null;
+  v.infs = { pres:v.inf, perf:v.ppt + ' esse', fut:(v.fap || v.ppt.slice(0, -2) + 'ūrus') + ' esse' }; v.tfp = null;
   if (v.c4){ v.tf.pres = ['ior','īris','ītur','īmur','īminī','iuntur'].map(e => v.stem + e); v.inf = v.stem + 'īrī'; v.imp = [v.stem + 'īre', v.stem + 'īminī']; v.tf.simpf = ['er','ēris','ētur','ēmur','ēminī','entur'].map(e => v.stem + 'īr' + e);
     if (v.key === 'orior') v.tf.pres = ['ior','eris','itur','imur','iminī','iuntur'].map(e => v.stem + e);
     v.forms = v.tf.pres; v.pp = [v.lemma, v.inf, v.ppt + ' sum']; v.head = v.pp.join(', '); v.infs.pres = v.inf; }
@@ -1333,15 +1366,15 @@ DEPS.forEach(v => {
 });
 /* chapter 52: the irregular verbs eō ("go") and ferō ("carry"), and their compounds */
 const IRR52 = [];
-[['eo','eō','',''], ['adeo','adeō','ad','approach, go to'], ['exeo','exeō','ex','go out, leave'], ['redeo','redeō','red','return, go back'], ['transeo','trānseō','trāns','cross, go across']].forEach(([key, lemma, pre, en]) => {
-  const P = f => pre + f, v = { ch:52, key, lemma, en: en || 'go', irr52:'eo', pre, inf:P('īre') };
+[['eo','eō','',''], ['ineo','ineō','in','go into, enter; begin'], ['adeo','adeō','ad','approach, go to'], ['exeo','exeō','ex','go out, leave'], ['redeo','redeō','red','return, go back'], ['transeo','trānseō','trāns','cross, go across']].forEach(([key, lemma, pre, en]) => {
+  const P = f => pre + f, v = { ch: key === 'ineo' ? 60 : 52, key, lemma, en: en || 'go', irr52:'eo', pre, inf:P('īre') };
   v.tf = { pres:['eō','īs','it','īmus','ītis','eunt'].map(P), impf:['ībam','ībās','ībat','ībāmus','ībātis','ībant'].map(P), fut:['ībō','ībis','ībit','ībimus','ībitis','ībunt'].map(P),
     perf:['iī','īstī','iit','iimus','īstis','iērunt'].map(P), plup:['ieram','ierās','ierat','ierāmus','ierātis','ierant'].map(P), futp:['ierō','ieris','ierit','ierimus','ieritis','ierint'].map(P),
     spres:['eam','eās','eat','eāmus','eātis','eant'].map(P), simpf:['īrem','īrēs','īret','īrēmus','īrētis','īrent'].map(P), sperf:['ierim','ierīs','ierit','ierīmus','ierītis','ierint'].map(P), splup:['īssem','īssēs','īsset','īssēmus','īssētis','īssent'].map(P) };
   v.imp = [P('ī'), P('īte')]; v.pp = [lemma, v.inf, P('iī'), P('itum')]; v.head = v.pp.join(', '); v.forms = v.tf.pres;
   v.infs = { pres:v.inf, perf:P('īsse'), fut:P('itūrus esse') }; v.tfp = null; IRR52.push(v); });
-[['fero','ferō','','tul','lāt','carry, bring, bear'], ['adfero','adferō','ad','attul','allāt','bring (to); report'], ['confero','cōnferō','cōn','contul','collāt','bring together, collect; compare'], ['infero','īnferō','īn','intul','illāt','bring in; inflict'], ['refero','referō','re','rettul','relāt','bring back; report']].forEach(([key, lemma, pre, pf, pt, en]) => {
-  const P = f => pre + f, v = { ch:52, key, lemma, en, irr52:'fero', pre, inf:P('ferre'), cj:3 };
+[['fero','ferō','','tul','lāt','carry, bring, bear'], ['adfero','adferō','ad','attul','allāt','bring (to); report'], ['confero','cōnferō','cōn','contul','collāt','bring together, collect; compare'], ['infero','īnferō','īn','intul','illāt','bring in; inflict'], ['refero','referō','re','rettul','relāt','bring back; report'], ['defero','dēferō','dē','dētul','dēlāt','carry down; report']].forEach(([key, lemma, pre, pf, pt, en]) => {
+  const P = f => pre + f, v = { ch: key === 'defero' ? 60 : 52, key, lemma, en, irr52:'fero', pre, inf:P('ferre'), cj:3 };
   v.tf = { pres:['ferō','fers','fert','ferimus','fertis','ferunt'].map(P), impf:['ferēbam','ferēbās','ferēbat','ferēbāmus','ferēbātis','ferēbant'].map(P), fut:['feram','ferēs','feret','ferēmus','ferētis','ferent'].map(P),
     perf:PERF_END.map(e => pf + e), plup:PLUP_END.map(e => pf + e), futp:FUTP_END.map(e => pf + e),
     spres:['feram','ferās','ferat','ferāmus','ferātis','ferant'].map(P), simpf:['ferrem','ferrēs','ferret','ferrēmus','ferrētis','ferrent'].map(P), sperf:['erim','erīs','erit','erīmus','erītis','erint'].map(e => pf + e), splup:['issem','issēs','isset','issēmus','issētis','issent'].map(e => pf + e) };
@@ -1449,6 +1482,7 @@ const OTHERS = [
   {ch:45, la:'praetereā', en:'besides, moreover', parse:'adverb', adv:{ kind:'manner', en:['besides','moreover','in addition'], verbs:[] }},
   {ch:45, la:'procul', en:'far off, at a distance', parse:'adverb'},
   {ch:45, la:'an', en:'or (in questions); whether', card:'or (in questions); utrum ... an: whether ... or', parse:'"or" (in a question)'},
+  {ch:59, la:'inde', en:'from there; then', parse:'adverb', adv:{ kind:'time', en:['from there','then','after that'], tns:['perf','fut'] }},
   {ch:57, la:'vehementer', en:'violently, vigorously; very much', parse:'adverb', adv:{ kind:'manner', en:['vigorously','violently','fiercely'], verbs:['pugno','oppugno','resisto','clamo'] }},
   {ch:55, la:'circiter', en:'about, around', parse:'adverb ("about", with numbers)'},
   {ch:55, la:'ferē', en:'almost, about', parse:'adverb'},
@@ -1672,6 +1706,14 @@ const EV = {
   aggredior:{b:['attack','approach'], s:['attacks','approaches'], g:['attacking','approaching']}, congredior:{b:['meet','fight','engage'], s:['meets','fights','engages'], g:['meeting','fighting','engaging']},
   consequor:{b:['overtake','follow','catch up with'], s:['overtakes','follows','catches up with'], g:['overtaking','following','catching up with']}, egredior:{b:['go out','come out','disembark'], s:['goes out','comes out','disembarks'], g:['going out','coming out','disembarking']},
   progredior:{b:['advance','go forward','proceed'], s:['advances','goes forward','proceeds'], g:['advancing','going forward','proceeding']}, sequor:{b:['follow'], s:['follows'], g:['following']}, vereor:{b:['fear','be afraid of','respect'], s:['fears','is afraid of','respects'], g:['fearing','being afraid of','respecting']},
+  ascendo:{b:['climb','climb up','ascend'], s:['climbs','climbs up','ascends'], g:['climbing','climbing up','ascending']}, coniungo:{b:['join','unite','connect'], s:['joins','unites','connects'], g:['joining','uniting','connecting']},
+  conscendo:{b:['board','climb','embark on'], s:['boards','climbs','embarks on'], g:['boarding','climbing','embarking on']}, descendo:{b:['come down','descend','go down'], s:['comes down','descends','goes down'], g:['coming down','descending','going down']},
+  reficio:{b:['repair','restore','rebuild'], s:['repairs','restores','rebuilds'], g:['repairing','restoring','rebuilding']}, reicio:{b:['throw back','drive back','reject'], s:['throws back','drives back','rejects'], g:['throwing back','driving back','rejecting']},
+  repello:{b:['drive back','repel','push back'], s:['drives back','repels','pushes back'], g:['driving back','repelling','pushing back']}, reperio:{b:['find','discover'], s:['finds','discovers'], g:['finding','discovering']},
+  taceo:{b:['keep quiet','keep silent'], s:['keeps quiet','keeps silent'], g:['keeping quiet','keeping silent']}, tribuo:{b:['assign','grant','give'], s:['assigns','grants','gives'], g:['assigning','granting','giving']}, verto:{b:['turn'], s:['turns'], g:['turning']},
+  ineo:{b:['enter','go into','begin'], s:['enters','goes into','begins'], g:['entering','going into','beginning']}, defero:{b:['report','carry down','bring'], s:['reports','carries down','brings'], g:['reporting','carrying down','bringing']},
+  mereor:{b:['deserve','earn'], s:['deserves','earns'], g:['deserving','earning']}, miror:{b:['admire','wonder at','marvel at'], s:['admires','wonders at','marvels at'], g:['admiring','wondering at','marveling at']}, morior:{b:['die'], s:['dies'], g:['dying']},
+  nascor:{b:['be born'], s:['is born'], g:['being born']}, revertor:{b:['return','turn back','go back'], s:['returns','turns back','goes back'], g:['returning','turning back','going back']},
   consuesco:{b:['become accustomed','get used'], s:['becomes accustomed','gets used'], g:['becoming accustomed','getting used']}, iaceo:{b:['lie','be lying'], s:['lies','is lying'], g:['lying']}, incolo:{b:['inhabit','live in'], s:['inhabits','lives in'], g:['inhabiting','living in']},
   iuvo:{b:['help','aid'], s:['helps','aids'], g:['helping','aiding']}, rideo:{b:['laugh','laugh at'], s:['laughs','laughs at'], g:['laughing','laughing at']}, rumpo:{b:['break','burst'], s:['breaks','bursts'], g:['breaking','bursting']}, sumo:{b:['take','take up'], s:['takes','takes up'], g:['taking','taking up']}, aperio:{b:['open'], s:['opens'], g:['opening']},
   coepi:{b:['begin'], s:['begins'], g:['beginning']},
@@ -1802,6 +1844,10 @@ const PAST = {
   dimitto:[['sent away','dismissed','let go'],['sent away','dismissed','let go']], enuntio:[['revealed','reported','disclosed'],['revealed','reported','disclosed']], expono:[['set out','explained','landed','put ashore'],['set out','explained','landed','put ashore']],
   incito:[['urged on','aroused','stirred up','incited'],['urged on','aroused','stirred up','incited']], intermitto:[['interrupted','stopped','broke off'],['interrupted','stopped','broken off']], occido:[['killed','slew'],['killed','slain']],
   opprimo:[['overwhelmed','crushed','surprised'],['overwhelmed','crushed','surprised']], traduco:[['led across','brought across','led over'],['led across','brought across','led over']],
+  ascendo:[['climbed','climbed up','ascended'],['climbed','ascended']], coniungo:[['joined','united','connected'],['joined','united','connected']], conscendo:[['boarded','climbed','embarked on'],['boarded','climbed']], descendo:[['came down','descended','went down'],['come down','descended','gone down']],
+  reficio:[['repaired','restored','rebuilt'],['repaired','restored','rebuilt']], reicio:[['threw back','drove back','rejected'],['thrown back','driven back','rejected']], repello:[['drove back','repelled','pushed back'],['driven back','repelled','pushed back']], reperio:[['found','discovered'],['found','discovered']],
+  taceo:[['kept quiet','kept silent'],['kept quiet','kept silent']], tribuo:[['assigned','granted','gave'],['assigned','granted','given']], verto:[['turned'],['turned']], ineo:[['entered','went into','began'],['entered','gone into','begun']], defero:[['reported','carried down','brought'],['reported','carried down','brought']],
+  mereor:[['deserved','earned'],['deserved','earned']], miror:[['admired','wondered at','marveled at'],['admired','wondered at','marveled at']], morior:[['died'],['died']], nascor:[['was born'],['been born']], revertor:[['returned','turned back','went back'],['returned','turned back','gone back']],
   consuesco:[['became accustomed','got used'],['become accustomed','gotten used']], iaceo:[['lay','was lying'],['lain']], incolo:[['inhabited','lived in'],['inhabited']], iuvo:[['helped','aided'],['helped','aided']], rideo:[['laughed','laughed at'],['laughed at']], rumpo:[['broke','burst'],['broken','burst']],
   sumo:[['took','took up'],['taken','taken up']], aperio:[['opened'],['opened']], coepi:[['began','started'],['begun','started']],
   consulo:[['consulted','asked the advice of'],['consulted']], eripio:[['rescued','snatched away'],['rescued','snatched away']], noceo:[['harmed','hurt'],['harmed','hurt']], parco:[['spared'],['spared']], pareo:[['obeyed'],['obeyed']], placeo:[['pleased'],['pleased']],
@@ -1939,6 +1985,28 @@ VERBS.forEach(v => {
     if (a !== pres){ a.ptcT = a === v.ptc ? 'perf' : 'fut'; a.vkey = v.key; a.ch = 41; a.en = a === v.ptc ? PAST[v.key][1].slice() : EV[v.key].b.map(b => 'about to ' + b); a.card = a.en[0]; }
     AB[a.m] = a; PTC_LIST.push(a);
     ['m','f','n'].forEach(g => ['sg','pl'].forEach(num => a.forms[g][num].forEach((form, ci) => addLook(form, { head:v.head, en:v.en, form, parse:x[1] + ', ' + CASES[ci] + ' ' + (num === 'sg' ? 'singular' : 'plural') + ' ' + GENDER_WORD[g], gloss:a.en[0], vid:'v:' + v.lemma, adj:a.m, ptcAdj:true, g, num, ci })))); });
+});
+/* chapter 59: the gerundive (future passive participle): the present stem + -ndus, -nda, -ndum (portandus, monendus, dūcendus, capiendus, audiendus) */
+VERBS.forEach(v => {
+  if (v.irregular || v.dep || !PAST[v.key]) return;
+  const st = v.key === 'do' ? 'd' : v.stem, mid = v.key === 'do' ? 'a' : v.io || v.cj === 4 ? 'ie' : v.cj === 2 || v.cj === 3 ? 'e' : 'a';
+  const tr = !NO_PASSIVE.includes(v.key) || ['facio','habeo','nescio','nego','spero','permitto','impero','persuadeo','mando','oro'].includes(v.key), gEn = tr ? 'to be ' + PAST[v.key][1][0] : 'used impersonally: "... must ' + EV[v.key].b[0] + '"';
+  v.gdv = A(59, st + mid + 'ndus', st + mid + 'nd', [gEn]);
+  ['m','f','n'].forEach(g => ['sg','pl'].forEach(num => { const f = v.gdv.forms[g][num][0];
+    addLook(f, { head:v.head, en:v.en, form:f, parse:'gerundive (future passive participle), nominative ' + (num === 'sg' ? 'singular' : 'plural') + ' ' + GENDER_WORD[g], gloss: tr ? 'to be ' + PAST[v.key][1][0] + '; with a form of sum, "must be ' + PAST[v.key][1][0] + '"' : gEn, vid:'v:' + v.lemma, vkey:v.key, ptc:true, ger:true, g, num, ci:0 }); }));
+});
+/* chapter 60: the gerund (pugnandī, pugnandō, ad pugnandum), the gerundive in every case, and the supine (petītum, dictū) */
+VERBS.concat(DEPS).forEach(v => {
+  if (v.irregular || !EV[v.key]) return;
+  const st = v.key === 'do' ? 'd' : v.stem, mid = v.key === 'do' ? 'a' : v.io || v.cj === 4 || v.c4 ? 'ie' : v.cj === 2 || v.cj === 3 ? 'e' : 'a', b = st + mid + 'nd', g = EV[v.key].g[0];
+  v.gnd = [null, b + 'ī', b + 'ō', b + 'um', b + 'ō'];
+  [1, 2, 3, 4].forEach(ci => addLook(v.gnd[ci], { head:v.head, en:v.en, form:v.gnd[ci], parse:'gerund, ' + CASES[ci], gloss:'"' + g + '" (a verbal noun)', vid:'v:' + v.lemma, vkey:v.key, ptc:true, gnd:true, ci }));
+  if (v.gdv) ['m','f','n'].forEach(gg => ['sg','pl'].forEach(num => [1, 2, 3, 4].forEach(ci => { const f = v.gdv.forms[gg][num][ci];
+    addLook(f, { head:v.head, en:v.en, form:f, parse:'gerundive (future passive participle), ' + CASES[ci] + ' ' + (num === 'sg' ? 'singular' : 'plural') + ' ' + GENDER_WORD[gg], gloss:'"to be ' + PAST[v.key][1][0] + '"', vid:'v:' + v.lemma, vkey:v.key, ptc:true, gdva:true, g:gg, num, ci }); })));
+  if (!v.dep && v.pp && v.pp[3] && /us$/.test(v.pp[3])){ const sb = v.pp[3].slice(0, -2);
+    v.sup = [sb + 'um', sb + 'ū'];
+    addLook(v.sup[0], { head:v.head, en:v.en, form:v.sup[0], parse:'supine in -um (accusative)', gloss:'"to ' + EV[v.key].b[0] + '" (after a verb of motion)', vid:'v:' + v.lemma, vkey:v.key, ptc:true, sup:true, ci:3 });
+    addLook(v.sup[1], { head:v.head, en:v.en, form:v.sup[1], parse:'supine in -ū (ablative)', gloss:'"to ' + EV[v.key].b[0] + '" (with an adjective like facilis)', vid:'v:' + v.lemma, vkey:v.key, ptc:true, sup:true, ci:4 }); }
 });
 VERBS.forEach(v => { SUBJ_TN.forEach(tn => { (v.tf[tn] || []).forEach((f, i) => addLook(f, { head:v.head, en:v.en, form:f, parse:TNAME[tn] + ' (active)', gloss:'subjunctive', vid:'v:' + v.lemma, vkey:v.key, i, tn, subj:true }));
   if (v.tfp && v.tfp[tn] && !/ /.test(v.tfp[tn][0])) v.tfp[tn].forEach((f, i) => addLook(f, { head:v.head, en:v.en, form:f, parse:TNAME[tn] + ' passive', gloss:'subjunctive', vid:'v:' + v.lemma, vkey:v.key, i, tn, pass:true, subj:true })); }); });
@@ -3277,7 +3345,47 @@ const SENTS = [
   {id:'58q', ch:58, la:'Voluntās populī erat clāra.', en:'The will of the people was clear.', re:'(?:will|wish|desire) of (?:people|nation) was (?:clear|plain|evident)'},
   {id:'58r', ch:58, la:'Mōrēs Gallōrum cognōvit.', en:'He learned the customs of the Gauls.', re:'(?:he|she) (?:learned|learnt|found out|got to know) (?:customs|ways|habits|character) of gauls'},
   {id:'58s', ch:58, la:'Adulēscēns quiētem nōn habēbat.', en:'The young man had no rest.', re:'(?:young man|youth) (?:had no rest|did not have rest|did not have any rest|was not having rest)'},
-  {id:'58t', ch:58, la:'Erant quī fugere vellent.', en:'There were some who wanted to flee.', re:'there were (?:some|some people|those|people) (?:who|that) (?:wanted|wished|would want) to (?:flee|run away)'}
+  {id:'58t', ch:58, la:'Erant quī fugere vellent.', en:'There were some who wanted to flee.', re:'there were (?:some|some people|those|people) (?:who|that) (?:wanted|wished|would want) to (?:flee|run away)'},
+  {id:'59a', ch:59, la:'Urbs mīlitibus capienda est.', en:'The soldiers must capture the city.', re:'(?:city (?:must|has to|ought to|should) be (?:captured|taken|seized) by soldiers|soldiers (?:must|have to|ought to|should) (?:capture|take|seize) city)'},
+  {id:'59b', ch:59, la:'Nōbīs pugnandum est.', en:'We must fight.', re:'(?:we (?:must|have to|ought to|should|need to) fight|it (?:must|has to) be fought by us)'},
+  {id:'59c', ch:59, la:'Patria cīvibus dēfendenda erat.', en:'The citizens had to defend their country.', re:'(?:(?:country|fatherland|homeland|native land) had to be defended by citizens|citizens had to defend (?:their |the )?(?:country|fatherland|homeland|native land))'},
+  {id:'59d', ch:59, la:'Explōrātōrēs ad castra mittendī sunt.', en:'Scouts must be sent to the camp.', re:'(?:scouts|spies) (?:must|have to|should|ought to|need to) be sent ' + toward + ' camp'},
+  {id:'59e', ch:59, la:'Mulierēs et īnfantēs servandī erant.', en:'The women and children had to be saved.', re:'women and (?:children|infants|babies) had to be (?:saved|rescued|protected|kept safe)'},
+  {id:'59f', ch:59, la:'Equitātus ad lītus mittendus erit.', en:'The cavalry will have to be sent to the shore.', re:'cavalry will (?:have|need) to be sent ' + toward + ' (?:shore|beach|coast)'},
+  {id:'59g', ch:59, la:'Tibi epistula scrībenda est.', en:'You must write a letter.', re:'(?:you (?:must|have to|ought to|should|need to) write (?:a |the )?letter|(?:a |the )?letter (?:must|has to|should) be written by you)', enTo:'(to one person)'},
+  {id:'59h', ch:59, la:'Hostēs saxa dē mūrō iaciēbant.', en:'The enemy were throwing rocks from the wall.', re:'(?:enemy|enemies) (?:were throwing|threw|kept throwing|used to throw|was throwing|were hurling|hurled) (?:rocks|stones) (?:down )?(?:from|off|down from) (?:wall|walls)'},
+  {id:'59i', ch:59, la:'Mulier lacrimās tenēre nōn poterat.', en:'The woman could not hold back her tears.', re:'woman (?:could not|was not able to|was unable to|couldn t) (?:hold back|hold|keep back|restrain|keep in|hold in) (?:her )?tears'},
+  {id:'59j', ch:59, la:'Cohortēs inde discessērunt.', en:'The cohorts left from there.', re:'(?:cohorts (?:departed|left|went away|withdrew|have departed|have left)(?: from there| then| thence)?|then cohorts (?:departed|left|went away|withdrew))'},
+  {id:'59k', ch:59, la:'Plēbs magistrātūs nōn amābat.', en:'The common people did not love the magistrates.', re:'(?:common people|plebs|plebeians|people) (?:did not love|did not like|were not loving|was not loving|used not to love|never loved) (?:magistrates|officials)'},
+  {id:'59l', ch:59, la:'Uxor custōdī cibum dedit.', en:'The wife gave food to the guard.', re:'wife (?:gave|has given) (?:food|a meal) to (?:guard|guardian|sentry|watchman)|wife (?:gave|has given) (?:guard|guardian|sentry|watchman) (?:food|a meal)'},
+  {id:'59m', ch:59, la:'Opīniōnem mulieris audīvimus.', en:'We heard the opinion of the woman.', re:'we (?:heard|have heard) (?:(?:opinion|belief|view) of woman|woman ?s? (?:opinion|belief|view))'},
+  {id:'59n', ch:59, la:'Custōdēs ad portās pōnendī erant.', en:'Guards had to be placed at the gates.', re:'(?:guards|sentries|watchmen) had to be (?:placed|put|posted|stationed|set) (?:at|by|near|beside|to) (?:gates|doors)'},
+  {id:'59o', ch:59, la:'Mīlitēs laudem imperātōris cupiēbant.', en:'The soldiers wanted the praise of the general.', re:'soldiers (?:wanted|desired|longed for|were wanting|wished for|used to want|were eager for|were desiring) (?:(?:praise|glory) of (?:general|commander)|(?:general|commander) ?s? (?:praise|glory))'},
+  {id:'59p', ch:59, la:'Nāvēs rēmīs ad lītus āctae sunt.', en:'The ships were driven to the shore by oars.', re:'ships (?:were|have been) (?:driven|moved|brought|rowed|propelled|steered) (?:to|toward|towards) (?:shore|beach|coast) (?:by|with) oars|ships (?:were|have been) (?:driven|moved|brought|rowed|propelled) (?:by|with) oars (?:to|toward|towards) (?:shore|beach|coast)'},
+  {id:'59q', ch:59, la:'Mīlitēs saxīs oppidum oppugnābant.', en:'The soldiers were attacking the town with rocks.', re:'soldiers (?:were attacking|attacked|kept attacking|used to attack|were assaulting) town with (?:rocks|stones)'},
+  {id:'59r', ch:59, la:'Cohortibus castra mūnienda erant.', en:'The cohorts had to fortify the camp.', re:'(?:camp had to be (?:fortified|built|strengthened) by cohorts|cohorts had to (?:fortify|build|strengthen) camp)'},
+  {id:'59s', ch:59, la:'Vōbīs in castrīs manendum erit.', en:'You will have to stay in the camp.', re:'(?:you will (?:have|need) to (?:stay|remain|wait) ' + IN + ' camp)', enTo:'(to more than one person)'},
+  {id:'59t', ch:59, la:'Explōrātōrēs ab equitātū capiēbantur.', en:'The scouts were being captured by the cavalry.', re:'(?:scouts|spies) (?:were being|were|kept being) (?:captured|taken|seized|caught) by cavalry'},
+  {id:'60a', ch:60, la:'Ad pugnandum vēnērunt.', en:'They came to fight.', re:'they (?:came|have come) (?:(?:in order |so as )?to fight|for (?:the purpose of |the sake of )?fighting)'},
+  {id:'60b', ch:60, la:'Lēgātī pācis petendae causā Rōmam vēnērunt.', en:'The envoys came to Rome to seek peace.', re:'(?:envoys|ambassadors|lieutenants|legates|deputies) (?:came|have come) to rome (?:(?:in order |so as )?to (?:seek|ask for|beg for|request) peace|for (?:the sake|the purpose) of (?:seeking|asking for) peace)|(?:envoys|ambassadors|lieutenants|legates|deputies) (?:came|have come) (?:in order |so as )?to (?:seek|ask for) peace to rome'},
+  {id:'60c', ch:60, la:'Mīlitēs ad castra mūnienda missī sunt.', en:'The soldiers were sent to fortify the camp.', re:'soldiers (?:were|have been) sent (?:(?:in order |so as )?to (?:fortify|build|strengthen) camp|for (?:the purpose of |the sake of )?(?:fortifying|building|strengthening) camp)'},
+  {id:'60d', ch:60, la:'Puer cupidus discendī erat.', en:'The boy was eager to learn.', re:'boy was (?:eager|desirous|keen) (?:to learn|for learning|of learning)'},
+  {id:'60e', ch:60, la:'Hostēs pugnandō vīcimus.', en:'We defeated the enemy by fighting.', re:'we (?:defeated|conquered|beat|overcame|have defeated|have conquered) (?:enemy|enemies) by fighting'},
+  {id:'60f', ch:60, la:'Lēgātī pācem petītum vēnērunt.', en:'The envoys came to seek peace.', re:'(?:envoys|ambassadors|lieutenants|legates|deputies) (?:came|have come) (?:in order |so as )?to (?:seek|ask for|beg for|request) peace'},
+  {id:'60g', ch:60, la:'Haec rēs facilis dictū nōn est.', en:'This thing is not easy to say.', re:'(?:this (?:thing|matter) is not easy to (?:say|tell)|this is not easy to (?:say|tell))'},
+  {id:'60h', ch:60, la:'Iter difficile inventū erat.', en:'The route was difficult to find.', re:'(?:route|way|journey|road|march) was (?:difficult|hard) to (?:find|discover)'},
+  {id:'60i', ch:60, la:'Caesar explōrātōrēs locī videndī causā mīsit.', en:'Caesar sent scouts to see the place.', re:'caesar (?:sent|has sent) (?:scouts|spies) (?:(?:in order |so as )?to (?:see|look at|view|examine|inspect) (?:the )?place|for (?:the sake|the purpose) of (?:seeing|viewing|examining|inspecting) (?:the )?place)'},
+  {id:'60j', ch:60, la:'Nautae nāvem cōnscendērunt.', en:'The sailors boarded the ship.', re:'sailors (?:boarded|have boarded|climbed (?:onto|aboard|into|on)?|embarked on|got on|went aboard) (?:ship|boat)'},
+  {id:'60k', ch:60, la:'Hostēs ā mūrō repulsī sunt.', en:'The enemy were driven back from the wall.', re:'(?:enemy|enemies) (?:were|was|have been|has been) (?:driven back|repelled|pushed back|repulsed|beaten back) (?:from|off) (?:wall|walls)'},
+  {id:'60l', ch:60, la:'Mīlitēs pontem reficere coepērunt.', en:'The soldiers began to repair the bridge.', re:'soldiers (?:began|started) (?:to (?:repair|restore|rebuild|fix)|(?:repairing|restoring|rebuilding|fixing)) bridge'},
+  {id:'60m', ch:60, la:'Multī virī in proeliō mortuī sunt.', en:'Many men died in the battle.', re:'many (?:men|soldiers|people) (?:died|have died|were killed) ' + IN + ' (?:battle|fight)'},
+  {id:'60n', ch:60, la:'Puer in hāc urbe nātus est.', en:'The boy was born in this city.', re:'boy (?:was|has been) born ' + IN + ' this city'},
+  {id:'60o', ch:60, la:'Caesar in Galliam revertitur.', en:'Caesar returns to Gaul.', re:'caesar (?:returns|is returning|goes back|turns back|comes back) (?:to|into) gaul'},
+  {id:'60p', ch:60, la:'Cīvēs virtūtem mīlitum mīrābantur.', en:'The citizens admired the courage of the soldiers.', re:'citizens (?:admired|were admiring|used to admire|wondered at|marveled at|marvelled at|were amazed at) (?:courage|bravery|valor|valour|virtue) of soldiers|citizens (?:admired|were admiring|wondered at|marveled at) soldiers ?s? (?:courage|bravery|valor|valour)'},
+  {id:'60q', ch:60, la:'Puerī tacēbant.', en:'The boys were silent.', re:'boys (?:were silent|kept quiet|were keeping quiet|were quiet|kept silent|were keeping silent|used to keep quiet|said nothing)'},
+  {id:'60r', ch:60, la:'Nūntius rem ad Caesarem dētulit.', en:'The messenger reported the matter to Caesar.', re:'messenger (?:reported|brought|carried|has reported) (?:the )?(?:matter|affair|thing|news|business) to caesar'},
+  {id:'60s', ch:60, la:'Mīlitēs collem ascendērunt.', en:'The soldiers climbed the hill.', re:'soldiers (?:climbed|have climbed|climbed up|went up|ascended) hill'},
+  {id:'60t', ch:60, la:'Mīlitēs oppidum iniērunt.', en:'The soldiers entered the town.', re:'soldiers (?:entered|went into|have entered|came into) (?:town|city)'}
 ];
 
 /* ---------- answer checking ---------- */
@@ -3361,6 +3469,11 @@ const PEOPLE = [
   {n:'pedes', sg:'foot soldier', pl:'foot soldiers', sex:'m', role:1, reSg:'(?:foot soldier|infantryman)', rePl:'(?:foot soldiers|infantry|infantrymen)'},
   {n:'iūdex', sg:'judge', pl:'judges', sex:'m', role:2},
   {n:'homō', sg:'man', pl:'people', sex:'m', reSg:'(?:man|person|human being)', rePl:'(?:people|men|persons|human beings)'},
+  {n:'mulier', sg:'woman', pl:'women', sex:'f', role:1},
+  {n:'uxor', sg:'wife', pl:'wives', sex:'f', role:1},
+  {n:'custōs', sg:'guard', pl:'guards', sex:'m', role:1, reSg:'(?:guard|guardian|sentry|watchman)', rePl:'(?:guards|guardians|sentries|watchmen)'},
+  {n:'explōrātor', sg:'scout', pl:'scouts', sex:'m', role:1, reSg:'(?:scout|spy)', rePl:'(?:scouts|spies)'},
+  {n:'magistrātus', sg:'magistrate', pl:'magistrates', sex:'m', role:2, reSg:'(?:magistrate|official)', rePl:'(?:magistrates|officials)'},
   {n:'adulēscēns', sg:'young man', pl:'young men', sex:'m', role:1, reSg:'(?:young man|youth)', rePl:'(?:young men|youths)'},
   {n:'hospes', sg:'guest', pl:'guests', sex:'m', role:1, reSg:'(?:guest|host|stranger|visitor)', rePl:'(?:guests|hosts|strangers|visitors)'},
   {n:'centuriō', sg:'centurion', pl:'centurions', sex:'m', role:2},
@@ -3575,7 +3688,9 @@ TAKES.lego = ['liber/sg','liber/pl','epistula/sg','littera/pl','carmen/sg','fāb
 Object.assign(TH, { 'herba':{sg:['the grass','(?:grass|herb|herbs)']}, 'subsidium':{sg:['help','(?:help|reinforcements|reinforcement|relief|aid)']}, 'toga':{sg:['the toga','toga'], pl:['the togas','togas']} });
 TAKES.mitto.push('subsidium/sg','subsidium/sg'); TAKES.exspecto.push('subsidium/sg'); ['toga/sg'].forEach(o => { TAKES.porto.push(o); TAKES.habeo.push(o); TAKES.paro.push(o); }); TAKES.video.push('herba/sg');
 /* chapter 46: nēmō and vīs are irregular */
-Object.assign(TH, { 'aliquid':{sg:['something','(?:something|anything)']}, 'grātia':{pl:['thanks','thanks']}, 'praeda':{sg:['the booty','(?:booty|plunder|loot|spoils)']}, 'agmen':{sg:['the column','(?:column|line of march|army)'], pl:['the columns','(?:columns|lines)']}, 'palūs':{sg:['the swamp','(?:swamp|marsh)'], pl:['the swamps','(?:swamps|marshes)']}, 'ancora':{sg:['the anchor','anchor'], pl:['the anchors','anchors']}, 'latus':{sg:['the side','(?:side|flank)'], pl:['the sides','(?:sides|flanks)']}, 'obses':{sg:['the hostage','hostage'], pl:['the hostages','hostages']}, 'mūnītiō':{sg:['the fortification','(?:fortification|defenses|defences|fortifications)'], pl:['the fortifications','(?:fortifications|defenses|defences|works)']}, 'rīpa':{sg:['the bank','(?:bank|shore)']}, 'classis':{sg:['the fleet','(?:fleet|navy)'], pl:['the fleets','fleets']}, 'facultās':{sg:['the opportunity','(?:opportunity|chance|ability)']}, 'Rhēnus':{sg:['the Rhine','(?:the )?rhine']}, 'colloquium':{sg:['the conference','(?:conference|meeting|talk|parley)']}, 'sagitta':{sg:['the arrow','arrow'], pl:['the arrows','arrows']}, 'tempestās':{sg:['the storm','(?:storm|tempest|weather)']}, 'aedificium':{sg:['the building','(?:building|structure)'], pl:['the buildings','(?:buildings|structures)']}, 'forum':{sg:['the forum','(?:forum|marketplace|market)']}, 'vestis':{sg:['the garment','(?:garment|clothing|clothes|robe)'], pl:['the clothes','(?:clothes|garments|clothing)']},
+Object.assign(TH, { 'saxum':{sg:['the rock','(?:rock|stone)'], pl:['the rocks','(?:rocks|stones)']}, 'lītus':{sg:['the shore','(?:shore|beach|coast)']}, 'rēmus':{pl:['the oars','oars']}, 'beneficium':{pl:['POSS kindnesses','(?:kindnesses|favors|favours|benefits)']},
+  'cohors':{sg:['the cohort','cohort'], pl:['the cohorts','cohorts']}, 'equitātus':{sg:['the cavalry','cavalry']}, 'laus':{sg:['praise','(?:praise|glory)']}, 'lacrima':{pl:['tears','tears']}, 'plēbs':{sg:['the common people','(?:common people|people|plebs|plebeians)']}, 'opīniō':{sg:['POSS opinion','(?:opinion|belief)']},
+  'aliquid':{sg:['something','(?:something|anything)']}, 'grātia':{pl:['thanks','thanks']}, 'praeda':{sg:['the booty','(?:booty|plunder|loot|spoils)']}, 'agmen':{sg:['the column','(?:column|line of march|army)'], pl:['the columns','(?:columns|lines)']}, 'palūs':{sg:['the swamp','(?:swamp|marsh)'], pl:['the swamps','(?:swamps|marshes)']}, 'ancora':{sg:['the anchor','anchor'], pl:['the anchors','anchors']}, 'latus':{sg:['the side','(?:side|flank)'], pl:['the sides','(?:sides|flanks)']}, 'obses':{sg:['the hostage','hostage'], pl:['the hostages','hostages']}, 'mūnītiō':{sg:['the fortification','(?:fortification|defenses|defences|fortifications)'], pl:['the fortifications','(?:fortifications|defenses|defences|works)']}, 'rīpa':{sg:['the bank','(?:bank|shore)']}, 'classis':{sg:['the fleet','(?:fleet|navy)'], pl:['the fleets','fleets']}, 'facultās':{sg:['the opportunity','(?:opportunity|chance|ability)']}, 'Rhēnus':{sg:['the Rhine','(?:the )?rhine']}, 'colloquium':{sg:['the conference','(?:conference|meeting|talk|parley)']}, 'sagitta':{sg:['the arrow','arrow'], pl:['the arrows','arrows']}, 'tempestās':{sg:['the storm','(?:storm|tempest|weather)']}, 'aedificium':{sg:['the building','(?:building|structure)'], pl:['the buildings','(?:buildings|structures)']}, 'forum':{sg:['the forum','(?:forum|marketplace|market)']}, 'vestis':{sg:['the garment','(?:garment|clothing|clothes|robe)'], pl:['the clothes','(?:clothes|garments|clothing)']},
   'oculus':{pl:['the eyes','(?:(?:his|her|their|our|my|your) )?eyes']}, 'auris':{pl:['the ears','(?:(?:his|her|their|our|my|your) )?ears']}, 'fidēs':{sg:['the loyalty','(?:loyalty|faith|trust|good faith)']}, 'vīs':{sg:['the force','(?:force|power|violence|strength)']} });
 /* chapter 44 */
 Object.assign(TH, { 'fossa':{sg:['the ditch','(?:ditch|trench|moat)'], pl:['the ditches','(?:ditches|trenches)']}, 'vāllum':{sg:['the rampart','(?:rampart|wall|palisade)']}, 'hīberna':{pl:['the winter quarters','(?:winter quarters|winter camp)']},
@@ -3617,7 +3732,7 @@ const MEANS = { pugno:['gladius/sg','gladius/pl','tēlum/pl','arma/pl','lapis/pl
   supero:['arma/pl','cōnsilium/sg','audācia/sg','auxilium/sg'], occupo:['arma/pl'], voco:['tuba/sg'], convoco:['tuba/sg','signum/sg'],
   servo:['cōnsilium/sg','auxilium/sg','cūra/sg'], libero:['arma/pl','cōnsilium/sg','auxilium/sg'], confirmo:['auxilium/sg'], porto:['carrus/pl'], nuntio:['littera/pl'], navigo:['nāvis/pl'], terreo:['vōx/sg'], interficio:['gladius/sg','tēlum/pl'], capio:['arma/pl','cōnsilium/sg'], vinco:['arma/pl','audācia/sg','cōnsilium/sg'], defendo:['arma/pl','gladius/pl','tēlum/pl','scūtum/pl'] };
 MEANS.sentio = ['oculus/pl','auris/pl']; MEANS.vulnero.push('sagitta/pl'); MEANS.interficio.push('sagitta/pl'); MEANS.pugno.push('sagitta/pl'); MEANS.capio.push('vīs/sg'); MEANS.porto.push('manus/sg'); MEANS.incito = ['verbum/pl']; MEANS.pugno.push('pīlum/pl','ferrum/sg'); MEANS.vulnero.push('pīlum/sg','ferrum/sg'); MEANS.interficio.push('ferrum/sg'); MEANS.scribo = (MEANS.scribo || []).concat(['manus/sg']);
-const INSTR = new Set(Object.values(MEANS).flat().map(o => o.split('/')[0]));
+const INSTR = new Set(Object.values(MEANS).flat().map(o => o.split('/')[0]).concat(['saxum','rēmus']));
 function meansFor(ctx, key, force){
   if (!ctx.pMeans || ctx.max < 9 || !MEANS[key] || (!force && Math.random() >= ctx.pMeans)) return null;
   const opts = MEANS[key].filter(o => NB[o.split('/')[0]].ch <= ctx.max && !ctx.used.has(o) && !ctx.used.has(o.split('/')[0]));
@@ -4041,6 +4156,7 @@ TAKES.conservo = ['@p','urbs/sg','patria/sg','cīvitās/sg'].filter(o => o[0] ==
 TAKES.produco = ['cōpia/pl','exercitus/sg','captīvus/pl']; TAKES.propono = ['cōnsilium/sg','praemium/pl','condiciō/pl']; TAKES.renuntio = ['victōria/sg','calamitās/sg','cōnsilium/sg']; TAKES.vasto = ['ager/pl','prōvincia/sg','fīnis/pl'];
 TAKES.rogo = ['@','@p','auxilium/sg','pāx/sg']; TAKES.oro = ['pāx/sg','auxilium/sg']; TAKES.postulo = ['frūmentum/sg','pāx/sg','obses/pl'].filter(o => NB[o.split('/')[0]]); TAKES.quaero = ['@','frūmentum/sg','vadum/sg','aurum/sg','auxilium/sg','vestis/pl'];
 TAKES.porto.push('onus/sg','flōs/pl'); TAKES.munio.push('vāllum/sg','hīberna/pl'); TAKES.facio.push('fossa/sg','vāllum/sg','ōrātiō/sg','opus/sg'); TAKES.video.push('flōs/pl','fossa/sg'); TAKES.defendo.push('hīberna/pl','iūs/sg'); TAKES.perficio.push('opus/sg','fossa/sg');
+TAKES.ascendo = ['mūrus/sg','mōns/sg','collis/sg']; TAKES.conscendo = ['nāvis/sg','nāvis/pl']; TAKES.reficio = ['pōns/sg','nāvis/pl','mūrus/pl']; TAKES.reicio = ['hostis/pl']; TAKES.repello = ['hostis/pl']; TAKES.reperio = TAKES.invenio.slice(); TAKES.tribuo = ['praemium/pl'];
 TAKES.incolo = ['ager/pl','īnsula/sg','Gallia/sg','urbs/sg']; TAKES.iuvo = ['@','@p']; TAKES.rumpo = ['pōns/sg']; TAKES.sumo = ['arma/pl','cibus/sg']; TAKES.aperio = ['porta/pl','iānua/sg'];
 TAKES.consulo = ['@','@p']; TAKES.eripio = ['@','@p']; TAKES.provideo = ['perīculum/pl','frūmentum/sg']; TAKES.rapio = ['@','@p','praeda/sg','arma/pl']; TAKES.solvo = ['nāvis/pl','captīvus/pl'];
 TAKES.augeo = ['cōpia/pl','exercitus/sg','numerus/sg']; TAKES.exploro = ['iter/sg','locus/sg']; TAKES.perturbo = ['@p','animus/pl']; TAKES.suscipio = ['bellum/sg','negōtium/sg','iter/sg']; TAKES.tego = ['corpus/sg','castra/pl','@p'];
@@ -4536,6 +4652,93 @@ function genInf(ctx){
   ctx.tags.push({ w:nf(p.nom, 4, p.num), use:'pw' });
   return finish(sub, 'in ' + nf(p.nom, 4, p.num) + (neg ? ' nōn ' : ' ') + verbLa(key, sub.who, tn), verbEn(key, sub.who, neg, tn) + ' ' + p.en.replace('POSS', sub.poss),
     sub.re + ' ' + ph(key, sub.who, neg, tn) + ' ' + p.re);
+}
+/* chapter 60: sentences with the gerund, the gerundive of purpose, and the supine */
+function gen60(ctx){
+  const r = Math.random(), past = Math.random() < 0.6;
+  const thingObj = k => { const opts = (TAKES[k] || []).filter(o => o[0] !== '@' && (() => { const p = o.split('/'), n = NB[p[0]]; return n && n.ch <= ctx.max && TH[p[0]] && TH[p[0]][p[1]] && !/POSS/.test(TH[p[0]][p[1]][0]); })()); if (!opts.length) return null;
+    const p = pick(opts).split('/'), n = p[0], num = p[1]; return { n, num, g:GK(NB[n].g), en:TH[n][num][0], re:TH[n][num][1] }; };
+  const motion = sub => { const k = pick(['venio','contendo','proficiscor','curro'].filter(x => VB[x] && VB[x].ch <= ctx.max)), tn = past ? 'perf' : pick(['pres','fut']); return { la:verbLa(k, sub.who, tn), en:verbEn(k, sub.who, false, tn), re:ph(k, sub.who, false, tn) }; };
+  const finish = (sub, la, en, re) => { const out = { gen:true, la:cap(la.filter(Boolean).join(' ')) + '.', en:cap(en) + '.', re, boost:2 }; const note = sub && !sub.explicit ? youNote(out.en, sub.who) : ''; if (note) out.enTo = note; return out; };
+  const purpRe = (k, oRe) => '(?:(?:in order |so as )?to ' + alt(EV[k].b) + (oRe ? ' ' + oRe : '') + '|for (?:the purpose of |the sake of )?' + alt(EV[k].g) + (oRe ? ' ' + oRe : '') + ')';
+  if (r < 0.2){
+    const k = pick(['pugno','laboro','navigo'].filter(x => VB[x] && VB[x].ch <= ctx.max && VB[x].gnd)), sub = depSub(ctx), m = motion(sub), ad = Math.random() < 0.5;
+    const ph2 = ad ? 'ad ' + VB[k].gnd[3] : VB[k].gnd[1] + ' causā'; ctx.tags.push({ w:VB[k].gnd[ad ? 3 : 1], use: ad ? 'gpur' : 'gcau' });
+    return finish(sub, [sub.la, ph2, m.la], sub.en + ' ' + m.en + ' to ' + EV[k].b[0], sub.re + ' ' + m.re + ' ' + purpRe(k));
+  }
+  if (r < 0.45){
+    const ks = transOf(ctx).filter(x => VB[x].gdv && thingObj(x) && !['facio','habeo','do'].includes(x)); if (!ks.length) return null;
+    const k = pick(ks), o = thingObj(k), sub = depSub(ctx), m = motion(sub), ad = Math.random() < 0.5;
+    const nLa = nf(o.n, ad ? 3 : 1, o.num), gLa = VB[k].gdv.forms[o.g][o.num][ad ? 3 : 1]; ctx.tags.push({ w:nLa, use: ad ? 'gpur' : 'gcau' });
+    return finish(sub, [sub.la, (ad ? 'ad ' : '') + nLa + ' ' + gLa + (ad ? '' : ' causā'), m.la], sub.en + ' ' + m.en + ' to ' + EV[k].b[0] + ' ' + o.en, sub.re + ' ' + m.re + ' ' + purpRe(k, o.re));
+  }
+  if (r < 0.58){
+    const ks = transOf(ctx).filter(x => VB[x].sup && thingObj(x) && !['facio','habeo','do'].includes(x)); if (!ks.length) return null;
+    const k = pick(ks), o = thingObj(k), sub = depSub(ctx), m = motion(sub), nLa = nf(o.n, 3, o.num); ctx.tags.push({ w:VB[k].sup[0], use:'sup' });
+    return finish(sub, [sub.la, nLa + ' ' + VB[k].sup[0], m.la], sub.en + ' ' + m.en + ' to ' + EV[k].b[0] + ' ' + o.en, sub.re + ' ' + m.re + ' ' + '(?:in order |so as )?to ' + alt(EV[k].b) + ' ' + o.re);
+  }
+  if (r < 0.72){
+    const gk = pick(['pugno','laboro'].filter(x => VB[x] && VB[x].ch <= ctx.max)), mains = (gk === 'pugno' ? ['vinco','supero','defendo','capio'] : ['munio','paro']).filter(x => VB[x] && VB[x].ch <= ctx.max && TAKES[x]); if (!gk || !mains.length) return null;
+    const k = pick(mains), sub = depSub(ctx), o = pickObject(k, sub, ctx), tn = pick(['perf','perf','pres','impf']); ctx.tags.push({ w:VB[gk].gnd[4], use:'gmi' });
+    return finish(sub, [sub.la, o.la, VB[gk].gnd[4], verbLa(k, sub.who, tn)], sub.en + ' ' + verbEn(k, sub.who, false, tn) + ' ' + o.en + ' by ' + EV[gk].g[0], sub.re + ' ' + ph(k, sub.who, false, tn) + ' ' + o.re + ' by ' + alt(EV[gk].g));
+  }
+  if (r < 0.86){
+    const gk = pick(['pugno','navigo','laboro','disco','fugio','vinco'].filter(x => VB[x] && VB[x].ch <= ctx.max)), p = freshPerson(ctx, x => !NB[x.n].proper), pl = Math.random() < 0.6, num = pl ? 'pl' : 'sg';
+    const g = GK(NB[p.n].g); if (!['m','f'].includes(g)) return null;
+    const cup = ADJS.find(a => a.m === 'cupidus'), sLa = nf(p.n, 0, num), now = Math.random() < 0.4; ctx.tags.push({ w:sLa, use:'ns' }, { w:VB[gk].gnd[1], use:'ggen' });
+    return finish(null, [sLa, cup.forms[g][num][0], VB[gk].gnd[1], VB.sum.tf[now ? 'pres' : 'impf'][pl ? 5 : 2]], 'the ' + (pl ? p.pl : p.sg) + ' ' + (now ? (pl ? 'are' : 'is') : (pl ? 'were' : 'was')) + ' eager to ' + EV[gk].b[0],
+      (pl ? p.rePl : p.reSg) + ' ' + (now ? '(?:are|is)' : '(?:were|was)') + ' (?:eager|desirous|keen) (?:to ' + alt(EV[gk].b) + '|for ' + alt(EV[gk].g) + '|of ' + alt(EV[gk].g) + ')');
+  }
+  const subs = [['iter','journey','(?:journey|route|march|way)',['invenio','reperio']], ['via','road','(?:road|way|street)',['invenio','reperio','video']], ['rēs','matter','(?:matter|thing|affair)',['dico','intellego','cognosco']]];
+  const sb = pick(subs), ks = sb[3].filter(x => VB[x] && VB[x].ch <= ctx.max && VB[x].sup); if (!ks.length || !NB[sb[0]] || NB[sb[0]].ch > ctx.max) return null;
+  const k = pick(ks), easy = Math.random() < 0.5, adj = ADJS.find(a => a.m === (easy ? 'facilis' : 'difficilis')), g = GK(NB[sb[0]].g), now = Math.random() < 0.5, sLa = nf(sb[0], 0, 'sg');
+  ctx.tags.push({ w:sLa, use:'ns' }, { w:VB[k].sup[1], use:'supu' });
+  return finish(null, [sLa, adj.forms[g].sg[0], VB[k].sup[1], now ? 'est' : 'erat'], 'the ' + sb[1] + ' ' + (now ? 'is' : 'was') + ' ' + (easy ? 'easy' : 'difficult') + ' to ' + EV[k].b[0],
+    sb[2] + ' ' + (now ? 'is' : 'was') + ' ' + (easy ? '(?:easy|simple)' : '(?:difficult|hard)') + ' to ' + alt(EV[k].b));
+}
+const MOTION60 = ['venio','eo','redeo','contendo','curro','proficiscor','mitto','discedo','convenio','pervenio','progredior','egredior','navigo','revertor'];
+const GER_HEADS = ['cupidus','facultās','spēs','tempus','ars','cōnsilium','studium'];
+const SUPU_ADJ = ['facilis','difficilis','ūtilis','mīrābilis'];
+const ABSTRACT60 = ['pāx','auxilium','lībertās','glōria','pecūnia','salūs','laus','frūmentum','cibus','aqua','fuga','victōria','praeda'];
+/* chapter 59: the passive periphrastic (gerundive + sum) and the dative of agent */
+const GER_INTR = ['pugno','laboro','venio','discedo','navigo','maneo','curro','contendo','sto','sedeo'];
+function gerAgent(ctx, avoid){
+  if (Math.random() < 0.45){ const w = pick(['1s','2s','1p','2p']), P = PPRON[w]; return { la:P.f[2], sEn:P.en[0], byEn:P.en[3], sRe:({ '1s':'i', '2s':'you', '1p':'we', '2p':'you' })[w], byRe:P.en[3], who:w }; }
+  const p = freshPerson(ctx, x => !NB[x.n].proper && x.n !== 'līberī' && x.n !== avoid), pl = Math.random() < 0.6, num = pl ? 'pl' : 'sg', la = nf(p.n, 2, num);
+  if (la === nf(p.n, 0, num === 'pl' ? 'sg' : 'pl') || la === nf(p.n, 0, num)) return null;
+  const en = 'the ' + (pl ? p.pl : p.sg), re = pl ? p.rePl : p.reSg;
+  return { la, sEn:en, byEn:en, sRe:re, byRe:re, who: pl ? '3p' : '3s' };
+}
+function gen59(ctx){
+  const tn = pick(['pres','pres','impf','fut']), must = tn === 'impf' ? 'had to' : tn === 'fut' ? 'will have to' : 'must';
+  const mustRe = tn === 'impf' ? '(?:had to|needed to|was obliged to|were obliged to)' : tn === 'fut' ? '(?:will have to|will need to|shall have to)' : '(?:must|has to|have to|ought to|should|needs to|need to)';
+  if (Math.random() < 0.35){
+    const ks = GER_INTR.filter(x => VB[x] && VB[x].ch <= ctx.max && VB[x].gdv && !TAKES[x]); if (!ks.length) return null;
+    const k = pick(ks), a = gerAgent(ctx); if (!a) return null;
+    ctx.tags.push({ w:a.la, use:'dag' });
+    const la = cap(a.la + ' ' + VB[k].gdv.forms.n.sg[0] + ' ' + VB.sum.tf[tn][2]) + '.';
+    const itRe = tn === 'impf' ? 'had to' : tn === 'fut' ? 'will have to' : '(?:must|has to)';
+    return { gen:true, la, en:cap(a.sEn) + ' ' + must + ' ' + EV[k].b[0] + '.', re:'(?:' + a.sRe + ' ' + mustRe + ' ' + alt(EV[k].b) + '|it ' + itRe + ' be ' + alt(PAST[k][1]) + ' by ' + a.byRe + ')', boost:2 };
+  }
+  const ks = transOf(ctx).filter(x => VB[x].gdv && TAKES[x] && !['facio','habeo'].includes(x)); if (!ks.length) return null;
+  const k = pick(ks);
+  const okO = o => { if (o[0] === '@') return true; const p = o.split('/'), n = NB[p[0]]; return n && n.ch <= ctx.max && TH[p[0]] && TH[p[0]][p[1]] && !/POSS/.test(TH[p[0]][p[1]][0]); };
+  const opts = TAKES[k].filter(okO); if (!opts.length) return null;
+  const o = pick(opts);
+  let sLa, sEn, sRe, g, num, sN;
+  if (o[0] === '@'){ const p = freshPerson(ctx, x => x.n !== 'līberī'), pl = o === '@p' || Math.random() < 0.4; num = pl ? 'pl' : 'sg'; sN = p.n; sLa = nf(p.n, 0, num); g = GK(NB[p.n].g); sEn = (NB[p.n].proper ? '' : 'the ') + (pl ? p.pl : p.sg); sRe = pl ? p.rePl : p.reSg; }
+  else { const p = o.split('/'); sN = p[0]; num = p[1]; sLa = nf(sN, 0, num); g = GK(NB[sN].g); sEn = TH[sN][num][0]; sRe = TH[sN][num][1]; }
+  if (!['m','f','n'].includes(g)) return null;
+  ctx.tags.push({ w:sLa, use:'ns' });
+  const vLa = VB[k].gdv.forms[g][num][0] + ' ' + VB.sum.tf[tn][num === 'pl' ? 5 : 2];
+  const be = tn === 'impf' ? '(?:had to|needed to) be' : tn === 'fut' ? '(?:will have to|will need to) be' : '(?:must|has to|have to|ought to|should|needs to|need to) be';
+  const a = Math.random() < 0.6 ? gerAgent(ctx, sN) : null;
+  if (a){
+    ctx.tags.push({ w:a.la, use:'dag' });
+    const la = cap((Math.random() < 0.5 ? [a.la, sLa] : [sLa, a.la]).join(' ') + ' ' + vLa) + '.';
+    return { gen:true, la, en:cap(a.sEn) + ' ' + must + ' ' + EV[k].b[0] + ' ' + sEn + '.', re:'(?:' + sRe + ' ' + be + ' ' + alt(PAST[k][1]) + ' by ' + a.byRe + '|' + a.sRe + ' ' + mustRe + ' ' + alt(EV[k].b) + ' ' + sRe + ')', boost:2 };
+  }
+  return { gen:true, la:cap(sLa + ' ' + vLa) + '.', en:cap(sEn) + ' ' + (tn === 'impf' ? 'had to' : tn === 'fut' ? 'will have to' : 'must') + ' be ' + PAST[k][1][0] + '.', re:sRe + ' ' + be + ' ' + alt(PAST[k][1]), boost:2 };
 }
 /* chapter 58: indefinite pronouns; relative clauses of characteristic; coepī */
 function gen58(ctx){
@@ -5292,7 +5495,10 @@ function genSentence(){
     ctx.pSep = max < 24 ? 0 : focus === 24 ? 0.3 : 0.05;
     ctx.pRel = max < 27 ? 0 : focus === 27 ? 0.45 : max >= 30 ? 0.12 : 0.07;
     const pExt = max < 30 ? 0 : focus === 30 ? 0.35 : focus === 31 ? 0.12 : 0.05, pRes = max < 31 ? 0 : focus === 31 ? 0.3 : 0.04;
-    if (pExt && Math.random() < pExt && (s = genExtent(ctx))) {}
+    const FG = { 41:genPtc, 43:genHort, 44:genPurpose, 45:genIndCmd, 46:genFear, 47:genIndQ, 48:genResult, 49:genCum, 50:genDep, 51:genAblAbs, 52:genIrr52, 53:gen53, 54:gen54, 55:gen55, 56:gen56, 57:gen57, 58:gen58, 59:gen59, 60:gen60 }[focus];
+    /* the chapter being practiced gets the first try, so its grammar shows up often */
+    if (FG && Math.random() < 0.55 && (s = FG(ctx))) { ctx.resDone = true; }
+    else if (pExt && Math.random() < pExt && (s = genExtent(ctx))) {}
     else if (pRes && Math.random() < pRes && (s = genRes(ctx))) { ctx.resDone = true; }
     else if (max >= 32 && Math.random() < (focus === 32 ? 0.45 : focus === 38 ? 0.35 : 0.06) && (s = genInf(ctx))) { ctx.resDone = true; }
     else if (max >= 33 && Math.random() < (focus === 33 ? 0.45 : focus === 34 || focus === 35 ? 0.15 : focus === 36 ? 0.3 : 0.05) && (s = genCompare(ctx))) { ctx.resDone = true; }
@@ -5320,6 +5526,8 @@ function genSentence(){
     else if (max >= 56 && Math.random() < (focus === 56 ? 0.6 : 0.06) && (s = gen56(ctx))) { ctx.resDone = true; }
     else if (max >= 57 && Math.random() < (focus === 57 ? 0.65 : 0.07) && (s = gen57(ctx))) { ctx.resDone = true; }
     else if (max >= 58 && Math.random() < (focus === 58 ? 0.65 : 0.07) && (s = gen58(ctx))) { ctx.resDone = true; }
+    else if (max >= 59 && Math.random() < (focus === 59 ? 0.65 : 0.07) && (s = gen59(ctx))) { ctx.resDone = true; }
+    else if (max >= 60 && Math.random() < (focus === 60 ? 0.65 : 0.07) && (s = gen60(ctx))) { ctx.resDone = true; }
     else if (max >= 40 && Math.random() < (focus === 40 ? 0.3 : 0.04) && (s = genDatPurp(ctx))) { ctx.resDone = true; }
     else if (max >= 39 && Math.random() < (focus === 39 ? 0.2 : 0.03) && (s = genCause(ctx))) { ctx.resDone = true; }
     else if (max >= 39 && Math.random() < (focus === 39 ? 0.15 : 0.03) && (s = genPrep39(ctx))) { ctx.resDone = true; }
@@ -5352,7 +5560,7 @@ function genSentence(){
     s.tags = ctx.tags;
     if (recent.includes(s.la) || !(t > 30 || readsCleanly(s))) continue;
     const ws = words(s.la), overlap = ws.filter(w => rw.has(strip(w).toLowerCase())).length;
-    const score = ws.length + (/[!?]$/.test(s.la) ? 2 : 0) + (s.pass && focus === 19 ? 1.5 : 0) + (s.boost || 0) - overlap * 1.2 - (recentShapes.includes(shapeOf(s.la)) ? 3 : 0);
+    const score = ws.length + (/[!?]$/.test(s.la) ? 2 : 0) + (s.pass && focus === 19 ? 1.5 : 0) + (s.boost || 0) - overlap * 1.2 - (recentShapes.includes(shapeOf(s.la)) ? 3 : 0) + (s.gen && ctx.resDone || ctx.tags.some(tg => USES[tg.use] && USES[tg.use].ch === focus) ? 5 : 0);
     if (score > bestScore){ best = s; bestScore = score; }
     if ((bestScore >= want && found >= 3) || ++found >= 10) break;
   }
@@ -5426,7 +5634,7 @@ function adjSpec(a){
 }
 /* what the drills can use: the chapter's own words, plus sum when chapter 9 (its imperfect and future) is picked */
 function formPool(withAdj){
-  let pool = NOUNS.filter(inCh).concat(VERBS.filter(inCh), withAdj ? ADJS.filter(inCh).filter(a => !a.indecl) : []);
+  let pool = NOUNS.filter(inCh).filter(n => !n.pron).concat(VERBS.filter(inCh), withAdj ? ADJS.filter(inCh).filter(a => !a.indecl) : []);
   if (state.chs.includes(9) && !pool.includes(VB.sum)) pool.push(VB.sum);
   /* a chapter with few nouns and verbs of its own (like 36, mostly adverbs) borrows the words of the chapters before it */
   if (pool.filter(x => !x.noPl && !x.plOnly).length < 3) pool = pool.concat(NOUNS.concat(VERBS).filter(x => x.ch <= maxCh() && x.ch >= maxCh() - 6 && !inCh(x) && !x.proper));
@@ -5445,6 +5653,8 @@ function makeFormEx(spec){
   if (!spec && state.fv === 'both' && maxCh() >= 44 && Math.random() < (state.chs.includes(44) ? 0.5 : 0.05)){ const v = pick(VERBS.filter(x => x.ch <= maxCh() && hortOk(x.key) && TAKES[x.key])); spec = { k:'purp', key:v.key, i:Math.floor(Math.random() * 6), mtn:pick(['pres','fut','perf','impf']) }; }
   if (!spec && state.fv === 'both' && maxCh() >= 43 && Math.random() < (state.chs.includes(43) ? 0.5 : 0.05)){ const v = pick(VERBS.filter(x => x.ch <= maxCh() && hortOk(x.key))); spec = { k:'hort', key:v.key, i:pick([3, 3, 3, 5, 2]) }; }
   if (!spec && state.fv === 'both' && maxCh() >= 42 && Math.random() < (state.chs.includes(42) ? 0.6 : 0.08)){ const v = pick(VERBS.filter(x => x.ch <= maxCh())), tn = pick(SUBJ_TN), pass = !!v.tfp && vroll(v, 0.3); spec = Object.assign({ k:'subj', key:v.key, tn, i:Math.floor(Math.random() * 6) }, pass ? { pass:true } : {}); }
+  if (!spec && maxCh() >= 60 && Math.random() < (state.chs.includes(60) ? 0.45 : 0.05)){ const vs = VERBS.filter(x => x.ch <= maxCh() && x.gnd && EV[x.key]), v = pick(vs); spec = Math.random() < 0.65 || !v.sup ? { k:'gnd', key:v.key, ci:pick([1, 3, 4]) } : { k:'sup', key:v.key, w:pick([0, 1]) }; }
+  if (!spec && state.fv !== 'act' && maxCh() >= 59 && Math.random() < (state.chs.includes(59) || state.chs.includes(60) ? 0.45 : 0.05)){ const vs = VERBS.filter(x => x.ch <= maxCh() && x.gdv && TAKES[x.key] && !['facio','habeo'].includes(x.key)); if (vs.length){ const v = pick(vs); spec = { k:'gdv', key:v.key, g:pick(['m','f','n']), num:pick(['sg','sg','pl']) }; } }
   if (!spec && state.fv === 'both' && maxCh() >= 41 && Math.random() < (state.chs.includes(41) ? 0.45 : 0.06)){ const v = pick(VERBS.filter(x => x.ch <= maxCh() && x.pptc)), ws = ['pres'].concat(v.ptc ? ['perf'] : [], v.fptc ? ['fut'] : []); spec = { k:'ptcx', key:v.key, which:pick(ws) }; }
   if (!spec && state.fv === 'both' && maxCh() >= 39 && Math.random() < (state.chs.includes(39) ? 0.4 : 0.08)){ const v = pick(VERBS.filter(x => x.ch <= maxCh() && !x.irregular)), ws = Object.keys(v.infs).filter(k => v.infs[k]); spec = { k:'infx', key:v.key, which:pick(ws) }; }
   if (!spec && state.fv === 'both' && state.chs.includes(36) && Math.random() < (one() === 36 ? 0.6 : 0.2)){ const o = pick(ADV_DEG); spec = { k:'advdeg', la:o.la }; }
@@ -5462,7 +5672,7 @@ function makeFormEx(spec){
   ex.miss = { t:'f', spec };
   if (spec.k === 'n'){ const n = NB[spec.nom]; ex.diagnose = v => diagNoun(n, spec.num, spec.ci, v); ex.skills = [{ t:'e', d:n.dk, num:spec.num, ci:spec.ci }]; }
   else if (spec.k === 'pp'){ const vb = VB[spec.key]; ex.diagnose = v => { const t = bare(v).split(' '); return t.includes(bare(vb.pp[2])) ? null : { recs:[ex.miss], note:'Check the third principal part: ' + vb.pp[2] + '.' + (vb.cj === 4 ? (/īvī$/.test(vb.pp[2]) ? ' Like audiō, it ends in -īvī.' : ' Veniō and its compounds have the perfect vēnī.') : vb.cj === 3 ? ' Third-conjugation perfects vary, so learn each one.' : vb.cj === 2 ? (/uī$/.test(vb.pp[2]) ? ' Like moneō, it ends in -uī.' : ' Its perfect changes the stem, so learn it by heart.') : vb.pp[2].endsWith('āvī') ? '' : ' This verb does not follow the usual -āvī pattern.') + ' It went to Review.' }; }; }
-  else if (spec.k === 'base' || spec.k === 'stem' || spec.k === 'adv' || spec.k === 'deg' || spec.k === 'advdeg' || spec.k === 'infx' || spec.k === 'ptcx' || spec.k === 'subj' || spec.k === 'hort' || spec.k === 'purp' || spec.k === 'icmd' || spec.k === 'fear' || spec.k === 'iq' || spec.k === 'res' || spec.k === 'cumx' || spec.k === 'dep' || spec.k === 'aax' || spec.k === 'irr52'){ /* the word itself goes to Review */ }
+  else if (spec.k === 'base' || spec.k === 'stem' || spec.k === 'adv' || spec.k === 'deg' || spec.k === 'advdeg' || spec.k === 'infx' || spec.k === 'ptcx' || spec.k === 'subj' || spec.k === 'hort' || spec.k === 'purp' || spec.k === 'icmd' || spec.k === 'fear' || spec.k === 'iq' || spec.k === 'res' || spec.k === 'cumx' || spec.k === 'dep' || spec.k === 'aax' || spec.k === 'irr52' || spec.k === 'gdv' || spec.k === 'gnd' || spec.k === 'sup'){ /* the word itself goes to Review */ }
   else if (spec.k === 'a'){ const g = GK(NB[spec.nom].g); ex.diagnose = v => { const d = diagAdj(AB[spec.adj], g, spec.num, spec.ci, v); return d ? { recs:[ex.miss], note:d.note + ' It went to Review.' } : null; }; }
   else { const vb = VB[spec.key], pass = spec.voice === 'pass' && !!vb.tfp, p = { t:'p', i:spec.i, irr: IRF(vb) };
     if (spec.tn && spec.tn !== 'pres') p.tn = spec.tn;
@@ -5571,6 +5781,23 @@ function formEx(spec){
     const v = VB[spec.key], pass = !!spec.pass && !!v.tfp, form = pass ? pasForm(v, spec.tn, spec.i) : v.tf[spec.tn][spec.i];
     return { task:'Type the ' + TNAME[spec.tn] + (pass ? ' passive' : '') + ' for "' + WHO_LONG[spec.i] + '"', show:v.head, lang:'la', sub:'Verb: "' + esc(v.en) + '"', subHTML:true, placeholder:'Type the Latin form', model:form, modelLang:'la',
       check: x => checkLa(x, pass ? pasAll(v, spec.tn, spec.i) : [form]), hint:subjHint(v, spec.tn, pass), nextLabel:'Next form' };
+  }
+  if (spec.k === 'gnd'){
+    const v = VB[spec.key], model = v.gnd[spec.ci], g = EV[v.key].g[0], b = EV[v.key].b[0];
+    const use = { 1:['genitive', '___ causā, "for the sake of ' + g + '"'], 3:['accusative', 'ad ___, "for ' + g + '", "to ' + b + '"'], 4:['ablative', '"by ' + g + '"'] }[spec.ci];
+    return { task:'Type the gerund, ' + use[0], show:v.head, lang:'la', sub:use[1], placeholder:'Type the Latin gerund', model, modelLang:'la', check: x => checkLa(x.replace(/^ad\s+|\s+causā?$/gi, ''), [model]),
+      hint:'<h3>The gerund</h3><p>Add <span lang="la">-ndī, -ndō, -ndum, -ndō</span> to the present stem: <span lang="la">pugnandī, monendī, dūcendī, capiendī, audiendī</span>. It is a verbal noun, like English "-ing".</p>', nextLabel:'Next verb' };
+  }
+  if (spec.k === 'sup'){
+    const v = VB[spec.key], model = v.sup[spec.w], b = EV[v.key].b[0];
+    return { task:'Type the supine in ' + (spec.w ? '-ū' : '-um'), show:v.head, lang:'la', sub:spec.w ? 'facile ___, "easy to ' + b + '"' : 'vēnērunt ___, "they came to ' + b + '"', placeholder:'Type the Latin supine', model, modelLang:'la', check: x => checkLa(x, [model]),
+      hint:'<h3>The supine</h3><p>Take the fourth principal part and change <span lang="la">-us</span> to <span lang="la">-um</span> (after a verb of motion: <span lang="la">petītum</span>, "to seek") or to <span lang="la">-ū</span> (with <span lang="la">facilis, difficilis</span>: <span lang="la">dictū</span>, "to say").</p>', nextLabel:'Next verb' };
+  }
+  if (spec.k === 'gdv'){
+    const v = VB[spec.key], model = v.gdv.forms[spec.g][spec.num][0], pp = PAST[v.key][1][0];
+    const nounEx = { m:{ sg:'vir', pl:'virī' }, f:{ sg:'urbs', pl:'urbēs' }, n:{ sg:'oppidum', pl:'oppida' } }[spec.g][spec.num];
+    return { task:'Type the gerundive, ' + GENDER_WORD[spec.g] + ' nominative ' + (spec.num === 'sg' ? 'singular' : 'plural'), show:v.head, lang:'la', sub:'"' + ({ m:{ sg:'the man', pl:'the men' }, f:{ sg:'the city', pl:'the cities' }, n:{ sg:'the town', pl:'the towns' } })[spec.g][spec.num] + ' must be ' + esc(pp) + '": ' + esc(nounEx) + ' ___ ' + (spec.num === 'sg' ? 'est' : 'sunt'), subHTML:true, placeholder:'Type the Latin gerundive', model, modelLang:'la',
+      check: x => checkLa(x.replace(/\s+(?:est|sunt)$/, ''), [model]), hint:'<h3>The gerundive</h3><p>Add <span lang="la">-ndus, -nda, -ndum</span> to the present stem: <span lang="la">portandus, monendus, dūcendus, capiendus, audiendus</span>. It declines like <span lang="la">bonus</span> and agrees with its noun: <span lang="la">urbs capienda est</span>, "the city must be taken".</p>', nextLabel:'Next verb' };
   }
   if (spec.k === 'ptcx'){
     const v = VB[spec.key], a = spec.which === 'pres' ? v.pptc : spec.which === 'perf' ? v.ptc : v.fptc, model = a.m;
@@ -5689,7 +5916,7 @@ function formEx(spec){
 /* Bases & parts: the base of every noun and adjective, the stems and principal parts of every verb */
 const bpRecent = [];
 function makeBaseEx(){
-  const max = maxCh(), pool = NOUNS.filter(inCh).filter(n => !n.proper).map(n => ({ spec:{ k:'base', nom:n.nom }, id:'n' + n.nom }))
+  const max = maxCh(), pool = NOUNS.filter(inCh).filter(n => !n.proper && !n.pron).map(n => ({ spec:{ k:'base', nom:n.nom }, id:'n' + n.nom }))
     .concat(ADJS.filter(inCh).map(a => ({ spec:{ k:'base', adj:a.m }, id:'a' + a.m })),
       VERBS.filter(inCh).map(v => ({ v, id:'v' + v.key })));
   if (!pool.length) return null;
@@ -5708,7 +5935,7 @@ function basesListHTML(){
   const items = [].concat(NOUNS.filter(inCh).map(n => ({ ch:n.ch, t:0, n })), ADJS.filter(inCh).map(a => ({ ch:a.ch, t:1, a })), VERBS.filter(inCh).map(v => ({ ch:v.ch, t:2, v })), DEPS.filter(inCh).map(v => ({ ch:v.ch, t:3, d:v })), IRR52.filter(inCh).map(v => ({ ch:v.ch, t:4, ir:v }))).sort((x, y) => x.ch - y.ch || x.t - y.t);
   items.forEach(x => {
     if (x.n){ const n = x.n, from = n.plOnly ? n.forms.pl[1] : n.ius ? n.alts.sg1 : n.forms.sg[1];
-      rows.push('<tr><td>' + L(n.head) + ' <small>' + esc(n.g) + '</small></td><td>' + esc(n.en) + '</td><td>Base ' + L(n.base + '-') + ' <small>(from ' + L(from) + ')</small></td></tr>'); }
+      rows.push('<tr><td>' + L(n.head) + ' <small>' + esc(n.g) + '</small></td><td>' + esc(n.en) + '</td><td>' + (n.pron ? 'Pronoun: ' + L(n.forms.sg.join(', ')) : 'Base ' + L(n.base + '-') + ' <small>(from ' + L(from) + ')</small>') + '</td></tr>'); }
     else if (x.a){ const a = x.a;
       rows.push('<tr><td>' + L(a.head) + '</td><td>' + esc(a.card) + '</td><td>Base ' + L(a.base + '-') + ' <small>(from ' + L(a.d3 ? a.forms.m.sg[1] : a.forms.f.sg[0]) + ')</small></td></tr>'); }
     else if (x.ir){ const v = x.ir;
@@ -5755,6 +5982,13 @@ const USES = {
   pa:{ ch:29, cs:'genitive', name:'Partitive genitive', why:'It names the whole that a part is taken from: pars mīlitum, "part of the soldiers"; nihil cibī, "nothing of food" (no food).' },
   og:{ ch:23, cs:'genitive', name:'Objective genitive', why:'It is the object of the action or feeling inside a noun: memoria pugnae, "the memory of (remembering) the battle".' },
   ap:{ ch:22, cs:'nominative', name:'Apposition', why:'It renames the noun beside it, set off by commas, so it takes the same case.' },
+  gpur:{ ch:60, cs:'accusative', name:'Gerund or gerundive with ad (purpose)', why:'Ad with the accusative of the gerund, or of a noun with a gerundive, shows purpose: ad pugnandum, "to fight"; ad urbem capiendam, "to capture the city".' },
+  gcau:{ ch:60, cs:'genitive', name:'Genitive with causā (purpose)', why:'The genitive of the gerund, or of a noun with a gerundive, before causā shows purpose: pugnandī causā, "for the sake of fighting"; pācis petendae causā, "to seek peace".' },
+  ggen:{ ch:60, cs:'genitive', name:'Genitive of the gerund with a noun or adjective', why:'The gerund in the genitive goes with words like cupidus, facultās, and spēs: cupidī pugnandī, "eager to fight"; facultās fugiendī, "a chance to flee".' },
+  gmi:{ ch:60, cs:'ablative', name:'Ablative of the gerund (means)', why:'The gerund in the ablative, with no preposition, tells how something is done: pugnandō, "by fighting".' },
+  sup:{ ch:60, cs:'accusative', name:'Supine in -um (purpose)', why:'After a verb of motion, the supine in -um shows purpose: pācem petītum vēnērunt, "they came to seek peace".' },
+  supu:{ ch:60, cs:'ablative', name:'Supine in -ū (with an adjective)', why:'With adjectives like facilis and difficilis, the supine in -ū tells in what respect: facile dictū, "easy to say".' },
+  dag:{ ch:59, cs:'dative', name:'Dative of agent', why:'With the passive periphrastic (the gerundive with sum), the person who must do the action is in the dative, not ā/ab with the ablative: nōbīs urbs capienda est, "the city must be taken by us", or "we must take the city".' },
   dsv:{ ch:57, cs:'dative', name:'Dative with special and compound verbs', why:'Some verbs take a dative instead of an accusative: pāreō (obey), noceō (harm), parcō (spare), placeō (please), resistō, studeō, and compounds like praesum: ducī pārent, "they obey the leader".' },
   abv:{ ch:55, cs:'ablative', name:'Ablative with special deponents', why:'Ūtor (use), potior (get possession of), fruor, fungor and vēscor take the ablative instead of an accusative object: armīs ūtuntur, "they use weapons".' },
   dpos:{ ch:53, cs:'dative', name:'Dative of possession', why:'With a form of sum, the dative names the owner: Mihi est liber, "I have a book".' },
@@ -5764,7 +5998,7 @@ const USES = {
   loc:{ ch:50, cs:'locative', name:'Locative (place where)', why:'Names of cities and towns, and domus and rūs, show place where in the locative, with no preposition: Rōmae, "at Rome"; domī, "at home".' },
   ag:{ ch:20, cs:'ablative', name:'Ablative of personal agent', why:'Ā or ab with the ablative names the person who does the action of a passive verb ("by the king").' }
 };
-const USE_WEIGHT = { ns:1, do:1.2, pn:2, pt:3, ac:3, pw:3, gp:3, pf:3, io:3, mi:3, vo:3, ma:3, ag:3, ap:3, og:3, sep:3, tm:3, twi:3, pa:3, ext:3, dur:3, cmp:3, da:3, dd:3, spec:3, sa:3, cau:3, dp:3, dr:3, loc:3, aa:3, gd:3, ad:3, dpos:3, abv:3, dsv:3 };
+const USE_WEIGHT = { ns:1, do:1.2, pn:2, pt:3, ac:3, pw:3, gp:3, pf:3, io:3, mi:3, vo:3, ma:3, ag:3, ap:3, og:3, sep:3, tm:3, twi:3, pa:3, ext:3, dur:3, cmp:3, da:3, dd:3, spec:3, sa:3, cau:3, dp:3, dr:3, loc:3, aa:3, gd:3, ad:3, dpos:3, abv:3, dsv:3, dag:3, gpur:3, gcau:3, ggen:3, gmi:3, sup:3, supu:3 };
 /* gather marked words from several sentences, then choose a case use first, so the easy ones
    (subject, predicate nominative, direct object) do not crowd out the rest */
 let lastCaseUse = null;
@@ -5803,7 +6037,7 @@ function makeVoiceItem(){
     if (wantPass && t % 2 === 0){ try { s = genPassive({ max, focus:0, used:new Set(), tags:[], tn:pick(tensesUpTo(VB.porto, max)), pAdj:0.4 }); } catch (e) { s = null; } }
     if (!s) s = genSentence();
     const R = readSentence(s.la); if (R.verbs.length !== 1) continue;
-    const v = R.verbs[0]; if (!v.h || v.h.imp || v.h.subj || (VB[v.h.vkey] && (VB[v.h.vkey].irregular || VB[v.h.vkey].irr52 === 'imp' || VB[v.h.vkey].key === 'videor'))) continue;
+    const v = R.verbs[0]; if (!v.h || v.h.imp || v.h.subj || v.h.ger || (VB[v.h.vkey] && (VB[v.h.vkey].irregular || VB[v.h.vkey].irr52 === 'imp' || VB[v.h.vkey].key === 'videor'))) continue;
     const ans = v.h.dep ? 'deponent' : v.h.pass ? 'passive' : 'active';
     const toks = s.la.split(' '), clean = x => x.replace(/[.?!,]/g, ''), at = toks.findIndex(tk => clean(tk) === v.w); if (at < 0) continue;
     const it = { s, toks, at, word:v.w, aux: v.aux ? v.aux.w : '', voice:true, ans, vkey:v.h.vkey, tn:v.h.tn || 'pres', who:PERS[v.h.i] };
@@ -5907,7 +6141,7 @@ const REF = [
   ['Dative', [['Indirect object','to whom something is given, told, or shown; also the person something is taken from','io'],['With certain intransitive verbs','such as <i lang="la">crēdō, pāreō, noceō</i>','dsv'],['With verbs compounded with prepositions','such as compounds in <i lang="la">in-, sub-, ob-, prae-</i>','dsv'],
     ['With compounds of <i lang="la">sum</i>','such as <i lang="la">adsum, praesum</i>'],['With special verbs','verbs whose meaning changes with a dative, such as <i lang="la">vacō, timeō, cōnsulō</i>'],
     ['Predicative dative (purpose)','what something serves as, usually with a second dative of the person affected: the "double dative"','dp'],['Reference (advantage)','the person or thing concerned; with parts of the body, whose hand, feet, or mind is involved','dr'],
-    ['Purpose','with verbs of choosing and appointing'],['With special adjectives','near to, friendly to, like, faithful to','da'],['Possession','the possessor, with a form of sum','dpos'],['Ethical','a pronoun that marks someone\'s interest'],['Agent','the doer with the passive periphrastic']]],
+    ['Purpose','with verbs of choosing and appointing'],['With special adjectives','near to, friendly to, like, faithful to','da'],['Possession','the possessor, with a form of sum','dpos'],['Ethical','a pronoun that marks someone\'s interest'],['Agent','the doer with the passive periphrastic','dag']]],
   ['Accusative', [['Direct object','what receives the action of the verb','do'],['Place to which','where motion is heading, usually with <i lang="la">ad</i>','pt'],['Extent of space','dimensions and distances','ext'],['Duration of time','how long','dur'],
     ['Exclamation','in outcries'],['Double accusative','two accusatives with verbs of making, teaching, asking, hiding'],['Cognate accusative','an object with the same idea as the verb, as in "live a life"'],
     ['Respect (specification)','in what respect, often a part of the body'],['Adverbial accusative','an accusative used as an adverb'],['With certain prepositions','such as <i lang="la">ante, post, per, trāns</i>'],['Subject of an infinitive','the subject in an indirect statement','sa']]],
@@ -6085,7 +6319,7 @@ function diagEnGrammar(s, typed, ch){
   /* the verb: wrong tense, or wrong person when the subject is inside the verb */
   const v = R.verbs[0];
   /* only one-verb sentences: with two halves it is not clear which English verb goes with which */
-  if (v && R.verbs.length === 1 && v.h && v.h.vkey && !v.h.imp && !/\?\s*$/.test(s.la) && out.notes.length < 2){
+  if (v && R.verbs.length === 1 && v.h && v.h.vkey && !v.h.imp && !v.h.ger && !/\?\s*$/.test(s.la) && out.notes.length < 2){
     const key = v.h.vkey, vb = VB[key], who = PERS[v.h.i], tn = v.h.tn || 'pres', neg = v.k > 0 && T[v.k - 1].s === 'non';
     /* adverbs can sit inside the verb phrase ("will always carry"), so set them aside */
     const advs = ADVS.flatMap(o => o.adv.en.map(normEn)).concat(s.advRe ? [s.advRe] : []);
@@ -6240,15 +6474,49 @@ function readSentence(la){
   /* chapter 39: a participle with esse is one infinitive: occupātum esse (perfect passive), ventūrum esse (future active) */
   T.forEach(t => {
     if (!t.r || (t.role && t.role !== 'inf')) return;
-    const pt = t.r.hits.filter(h => h.ptc); if (!pt.length) return;
+    const pt = t.r.hits.filter(h => h.ptc && !h.ger && !h.gnd && !h.sup && !h.gdva); if (!pt.length) return;
     const es = T[t.k + 1]; if (!es || es.s !== 'esse') return;
     const h0 = pt.find(h => h.ci === 3) || pt[0];
     t.role = 'inf'; t.h = { vkey:h0.vkey, inf:true, tn: h0.fptc ? 'fut' : 'perf', pass: !h0.fptc, g:h0.g, num:h0.num }; t.aux = es; t.ptHits = pt; es.role = 'aux';
   });
+  /* chapter 59: the gerundive next to a form of sum is the passive periphrastic (dēlenda est, "must be destroyed") */
+  T.forEach(t => {
+    if (!t.r || t.role) return;
+    const gh = t.r.hits.filter(h => h.ger); if (!gh.length) return;
+    /* chapter 60: cupidī pugnandī erant: a genitive gerund after cupidus is not the periphrastic */
+    if (t.r.hits.some(h => h.gnd && h.ci === 1) && T[t.k - 1] && T[t.k - 1].r && T[t.k - 1].r.hits.some(h => (h.adj && GER_HEADS.includes(h.adj)) || (h.nom && GER_HEADS.includes(h.nom)))) return;
+    const aux = [T[t.k + 1], T[t.k - 1]].find(x => x && x.role === 'verb' && x.h.vkey === 'sum' && !x.h.imp && !x.h.subj && ({ pres:1, impf:1, fut:1 })[x.h.tn || 'pres']);
+    if (!aux) return;
+    const num = aux.h.i < 3 ? 'sg' : 'pl', h0 = gh.find(h => h.num === num) || gh[0];
+    t.role = 'verb'; t.h = { vkey:h0.vkey, i:aux.h.i, tn:aux.h.tn || 'pres', pass:true, ger:true, imps: !TAKES[h0.vkey] && h0.g === 'n' && num === 'sg', g:h0.g, num }; t.aux = aux; aux.role = 'aux';
+    verbs.splice(verbs.indexOf(aux), 1, t);
+  });
+  /* chapter 60: the gerund, a noun with a gerundive (ad urbem capiendam, pācis petendae causā), and the supine */
+  T.forEach((t, idx) => {
+    if (!t.r || t.role) return;
+    const hs = t.r.hits, prev = T[idx - 1], prev2 = T[idx - 2], next = T[idx + 1];
+    const ga = hs.filter(h => h.gdva), gn = hs.filter(h => h.gnd), sp = hs.filter(h => h.sup);
+    if (!ga.length && !gn.length && !sp.length) return;
+    const agree = (n, ci) => { if (!n || n.role || !n.r) return null; for (const g of ga){ if (g.ci !== ci) continue; const nh = n.r.hits.find(h => h.nom && h.ci === ci && h.num === g.num && GK(NB[h.nom].g) === g.g); if (nh) return [g, nh]; } return null; };
+    const isCausa = x => x && x.s === 'causa' && x.r && x.r.hits.some(h => h.nom === 'causa' && h.ci === 4);
+    let m;
+    if (prev2 && prev2.s === 'ad' && !prev2.role && (m = agree(prev, 3))){ prev2.role = 'gad'; prev.role = 'gpur'; prev.h = m[1]; prev.g60 = t; t.role = 'gdva'; t.h = m[0]; t.of = prev; t.kind = 'ad'; return; }
+    if (isCausa(next) && (m = agree(prev, 1))){ next.role = 'causa'; prev.role = 'gcau'; prev.h = m[1]; prev.g60 = t; t.role = 'gdva'; t.h = m[0]; t.of = prev; t.kind = 'causa'; return; }
+    const gh = ci => gn.find(h => h.ci === ci);
+    if (gh(3) && prev && prev.s === 'ad' && !prev.role){ prev.role = 'gad'; t.role = 'gpur'; t.h = gh(3); t.kind = 'ad'; return; }
+    if (gh(1) && isCausa(next)){ next.role = 'causa'; t.role = 'gcau'; t.h = gh(1); t.kind = 'causa'; return; }
+    if (gh(1) && prev && prev.r && prev.r.hits.some(h => (h.nom && GER_HEADS.includes(h.nom)) || (h.adj && GER_HEADS.includes(h.adj)))){ t.role = 'ggen'; t.h = gh(1); t.of = prev; t.kind = 'gen'; const ah0 = prev.r.hits.find(h => h.adj && GER_HEADS.includes(h.adj)); if (!prev.role && ah0 && verbs.some(v => v.h.vkey === 'sum')){ prev.role = 'padj'; prev.h = ah0; } return; }
+    if (gh(4) && !(prev && (PREP[prev.s] || PREP[prev.s + '_abl']))){ t.role = 'gmi'; t.h = gh(4); t.kind = 'abl'; return; }
+    const s3 = sp.find(h => h.ci === 3), s4 = sp.find(h => h.ci === 4);
+    if (s3 && verbs.some(v => MOTION60.includes(v.h.vkey)) && !verbs.some(v => v.h.vkey === 'sum' && Math.abs(v.k - t.k) === 1)){ t.role = 'sup'; t.h = s3;
+      if (prev && !prev.role && prev.r && prev.r.hits.some(h => h.nom && h.ci === 3) && !T.slice(0, idx - 1).some(x => x.r && x.r.hits.some(h => h.nom && h.ci === 3) && !x.role && !x.r.hits.some(h => h.nom && h.ci === 0))){ prev.role = 'sdo'; prev.h = prev.r.hits.find(h => h.nom && h.ci === 3); prev.sup = t; }
+      return; }
+    if (s4){ const adj = [prev, next].find(x => x && x.r && x.r.hits.some(h => h.adj && SUPU_ADJ.includes(h.adj))); if (adj){ t.role = 'supu'; t.h = s4; t.of = adj; const ah0 = adj.r.hits.find(h => h.adj && SUPU_ADJ.includes(h.adj) && h.ci === 0); if (!adj.role && ah0 && verbs.some(v => v.h.vkey === 'sum')){ adj.role = 'padj'; adj.h = ah0; } return; } }
+  });
   /* the perfect passive: a participle next to a form of sum is one verb (occupātum est, "it was seized") */
   T.forEach(t => {
     if (!t.r || t.role) return;
-    const pt = t.r.hits.filter(h => h.ptc); if (!pt.length) return;
+    const pt = t.r.hits.filter(h => h.ptc && !h.ger && !h.gnd && !h.sup && !h.gdva); if (!pt.length) return;
     const aux = [T[t.k + 1], T[t.k - 1]].find(x => x && x.role === 'verb' && x.h.vkey === 'sum' && !x.h.imp && ({ pres:1, impf:1, fut:1 })[x.h.tn || 'pres']);
     if (!aux) return;
     const tn = ({ pres:'perf', impf:'plup', fut:'futp' })[aux.h.tn || 'pres'], num = aux.h.i < 3 ? 'sg' : 'pl', h0 = pt.find(h => h.num === num) || pt[0];
@@ -6345,6 +6613,7 @@ function readSentence(la){
     const prev = idx > 0 ? T[idx - 1] : null, prevNoun = prev && prev.h && prev.h.nom && prev.role !== 'verb' && prev.role !== 'prep' && !(t.r.suffix === 'que');
     const can = ci => nh.find(h => h.ci === ci);
     { const dv = cv && DSV.includes(cv.h.vkey) ? cv : T.find(x => x.role === 'inf' && x.h && DSV.includes(x.h.vkey)), vn = dv && PERS[dv.h.i]; if (dv && can(2) && !t.prepTok && !T.some(x => x.role === 'dsv') && (!can(0) || subj || !['3s','3p'].includes(vn) || !nh.some(h => h.ci === 0 && h.num === (vn === '3p' ? 'pl' : 'sg')))){ t.role = 'dsv'; t.h = can(2); return; } }
+    { const gv = verbs.find(v => v.h.ger); if (gv && can(2) && !t.prepTok && !T.some(x => x.role === 'dag') && (gv.h.imps || subj || !can(0) || !nh.some(h => h.ci === 0 && h.num === gv.h.num))){ t.role = 'dag'; t.h = can(2); return; } }
     if (prev && prev.role === 'quamc'){ t.role = 'qcmp'; t.h = (subj && subj.h && can(subj.h.ci)) || can(0) || nh[0]; return; }
     const linked = t.r.suffix === 'que' && prev && prev.role && prev.h && prev.h.nom;
     if (linked && can(prev.h.ci) && !['prep','gp'].includes(prev.role)){ t.role = prev.role; t.h = can(prev.h.ci); return; }
@@ -6418,6 +6687,7 @@ function readSentence(la){
     const wc = ph0.find(h => h.withCum); if (wc){ t.role = 'ac'; t.h = wc; return; }
     const vb = verbs.find(v => v.k > idx) || verbs[verbs.length - 1], vp = vb && !vb.h.imp ? PERS[vb.h.i] : null;
     const nomH = ph0.find(h => h.ci === 0 && h.ppers === vp), acc = ph0.find(h => h.ci === 3), dat = ph0.find(h => h.ci === 2);
+    if (dat && !nomH && verbs.some(v => v.h.ger)){ t.role = 'dag'; t.h = dat; return; }
     if (dat && isSum && verbs.every(v => v.h.vkey === 'sum') && !nomH){ t.role = 'dpos'; t.h = dat; return; }
     if (dat && !nomH && verbs.some(v => DSV.includes(v.h.vkey))){ t.role = 'dsv'; t.h = dat; return; }
     if (nomH){ t.role = 'ns'; t.h = nomH; return; }
@@ -6485,6 +6755,9 @@ function stepsHTML(s){
       if (h.dep && v.aux && h.vkey === 'fio') return L(v.w) + ' ' + L(v.aux.w) + ' is the verb: the ' + TNAME[tn] + ' of ' + L('fīō') + ' (' + L(vb.head) + '), made with the participle of ' + L('faciō') + '. It means "' + esc(PRON_EN[who].replace(' (all)', '')) + ' ' + (tn === 'perf' ? 'became (was made)' : tn === 'plup' ? 'had become' : 'will have become') + '". The participle agrees with the subject.';
       if (h.dep && v.aux) return L(v.w) + ' ' + L(v.aux.w) + ' is the verb, from ' + L(vb.head) + ', "' + esc(vb.en) + '". It is a <b>deponent</b> verb: passive in form but active in meaning. The participle ' + L(v.w) + ' with ' + L(v.aux.w) + ' makes the ' + TNAME[tn] + ', so it means "' + esc(PRON_EN[who].replace(' (all)', '')) + ' ' + esc(simple(h.vkey, who, tn)) + '". The participle agrees with the subject.';
       if (h.dep && !h.subj && !h.imp) return L(v.w) + ' is the verb, from ' + L(vb.head) + ', "' + esc(vb.en) + '". It ends in ' + L(PEND_P[tn][h.i]) + ', a passive ending' + (tn !== 'pres' ? ' (the ' + TNAME[tn] + ' tense)' : '') + ', but ' + L(vb.lemma) + ' is <b>deponent</b>: passive in form, active in meaning. So it means "' + esc(PRON_EN[who].replace(' (all)', '')) + ' ' + esc(simple(h.vkey, who, tn)) + '".';
+      if (h.ger){ const pp = PAST[h.vkey][1][0], b = EV[h.vkey].b[0], must = tn === 'impf' ? 'had to' : tn === 'fut' ? 'will have to' : 'must', two = v.aux.k < v.k ? L(v.aux.w) + ' ' + L(v.w) : L(v.w) + ' ' + L(v.aux.w);
+        return two + ' is the verb, from ' + L(vb.head) + ', "' + esc(vb.en) + '". ' + L(v.w) + ' is the <b>gerundive</b> (the future passive participle' + (h.imps ? '' : ', "to be ' + esc(pp) + '"') + '). With ' + L(v.aux.w) + ', a form of ' + L('sum') + ', it makes the <b>passive periphrastic</b>, which says what must be done' + (tn !== 'pres' ? ' (' + L(v.aux.w) + ' is ' + TNAME[tn] + ', so "' + must + '")' : '') + '. ' +
+          (h.imps ? L(vb.lemma) + ' takes no direct object, so the neuter ' + L(v.w) + ' is used impersonally, with no subject: "it ' + must + ' be done". In English, say "... ' + must + ' ' + esc(b) + '".' : 'So it means "' + esc(PRON_EN[who].replace(' (all)', '')) + ' ' + must + ' be ' + esc(pp) + '". The gerundive agrees with the subject, like an adjective.'); }
       if (h.pass && v.aux) return L(v.w) + ' ' + L(v.aux.w) + ' is the verb, from ' + L(vb.head) + ', "' + esc(vb.en) + '". It is two words: the participle ' + L(v.w) + ' and ' + L(v.aux.w) + ', a form of ' + L('sum') + '. Together they make the ' + TNAME[tn] + ' passive, so it means "' + esc(PRON_EN[who].replace(' (all)', '')) + ' ' + esc(simpleP(h.vkey, who, tn)) + '". The participle agrees with the subject, like an adjective.';
       if (h.subj && tn === 'spres' && R.verbs.length === 1 && [2, 3, 5].includes(h.i)) return L(v.w) + ' is the verb, from ' + L(vb.head) + ', "' + esc(vb.en) + '". It is the present subjunctive, for "' + esc(WHO_LONG[h.i]) + '". It is the main verb of the sentence, so it is a <b>hortatory subjunctive</b>, an urging: "' + (h.i === 3 ? 'let us ' : h.i === 5 ? 'let them ' : 'let him (her) ') + esc(EV[h.vkey].b[0]) + '".';
       if (h.subj){
@@ -6527,6 +6800,9 @@ function stepsHTML(s){
     steps.push(['Find the subject', 'A command has no subject word. The subject is "you", the person being told.']);
   } else if (R.verbs.length && VB[R.verbs[0].h.vkey] && VB[R.verbs[0].h.vkey].irr52 === 'imp'){
     steps.push(['Find the subject', 'An impersonal verb has no subject word: its subject is "it". In good English, make the ' + (R.verbs[0].h.vkey === 'licet' ? 'dative' : 'accusative') + ' person the subject.']);
+  } else if (R.verbs.length && R.verbs[0].h.ger && R.verbs[0].h.imps){
+    const dg = T.find(t => t.role === 'dag');
+    steps.push(['Find the subject', 'There is no subject word: this passive periphrastic is impersonal ("it must be done").' + (dg ? ' In good English, make the dative ' + L(dg.w) + ' the subject.' : '')]);
   } else if (R.verbs.length){
     const who = PERS[R.verbs[0].h.i];
     steps.push(['Find the subject', 'There is no nominative noun, so the subject is inside the verb ending: "' + esc(PRON_EN[who].replace(' (all)', '').replace('he, she, or it', 'he, she, or it')) + '".']);
@@ -6545,6 +6821,7 @@ function stepsHTML(s){
   else if (objs.length) steps.push(['Find the direct object', objs.map(t => infObj(t) || (t.interr ? L(t.w) + ' asks "whom?" It is accusative because it is the object.' : t.qadjNoun ? L(T[t.k - 1].w) + ' ' + L(t.w) + ' is accusative: "which ' + esc(NW(t).replace(/^the /, '')) + '?"' : t.rel ? L(t.w) + ' is the relative pronoun "whom" (or "which"). It refers back to ' + L(t.of.w) + ', so it is ' + GENDER_WORD[t.h.g] + ' and ' + (t.h.num === 'pl' ? 'plural' : 'singular') + '. It is accusative because it is the object of the verb in its own clause.' : LW(t) + ' is accusative, so it receives the action: "' + esc(NW(t)) + '".')).join('<br>')]);
   else if (T.some(t => t.s === 'nihil') && !R.isSum && !R.passive) steps.push(['Find the direct object', L('Nihil') + ', "nothing", is the object. It never changes form.']);
   else if (T.some(t => t.s === 'plus') && !R.isSum && !R.passive) steps.push(['Find the direct object', L('Plūs') + ', "more", is the object. It is a neuter noun, accusative here.']);
+  else if (R.passive && R.verbs.some(v => v.h.ger && v.h.imps)) steps.push(['Look for a direct object', 'There is no direct object: ' + L(VB[R.verbs.find(v => v.h.ger).h.vkey].lemma) + ' does not take one.']);
   else if (R.passive) steps.push(['Look for a direct object', 'A passive verb has no direct object: the subject is the one receiving the action.']);
   else if (R.verbs.length && !R.isSum) steps.push(['Look for a direct object', 'No noun here is accusative on its own, so the verb has no direct object.']);
   /* 4. everything else */
@@ -6607,6 +6884,20 @@ function stepsHTML(s){
     else if (t.role === 'io' && R.verbs.some(v => v.h.vkey === 'infero') && T.some(x => x.s === 'bellum')) rest.push(L('Bellum īnferre') + ' with the dative means "to make war on": ' + L(t.w) + ' is dative.');
     else if (t.indef) rest.push('After ' + L(T[T.indexOf(t) - 1].w) + ', ' + L(t.w) + ' is the indefinite pronoun "anyone", not "who?". ("After sī, nisi, num, and nē, ali- takes a holiday.")');
     else if (t.role === 'ns' && t.h && t.h.nom && NB[t.h.nom].pron && false){}
+    else if (t.role === 'gdva'){ const v = VB[t.h.vkey], n = t.of, b = EV[v.key].b[0], nEn = NW(n).replace(/^the /, ''), nThe = (ABSTRACT60.includes(n.h.nom) ? '' : 'the ') + nEn, ph2 = (t.kind === 'ad' ? L('ad') + ' ' : '') + L(n.w) + ' ' + L(t.w) + (t.kind === 'causa' ? ' ' + L('causā') : '');
+      rest.push(ph2 + ': ' + L(t.w) + ' is the <b>gerundive</b> of ' + L(v.lemma) + ' (the future passive participle, "to be ' + esc(PAST[v.key][1][0]) + '"). It agrees with ' + L(n.w) + ', ' + CASES[t.h.ci] + ' ' + (t.h.num === 'sg' ? 'singular' : 'plural') + '. ' + (t.kind === 'ad' ? L('ad') + ' with a noun and a gerundive' : 'The genitive of a noun and a gerundive with ' + L('causā') + ' (which comes after it)') + ' shows <b>purpose</b>. Literally "' + (t.kind === 'ad' ? 'toward ' + esc(nThe) + ' to be ' + esc(PAST[v.key][1][0]) : 'for the sake of ' + esc(nThe) + ' to be ' + esc(PAST[v.key][1][0])) + '", but in good English say "to ' + esc(b) + ' ' + esc(nThe) + '".'); }
+    else if (['gpur','gcau','ggen','gmi'].includes(t.role) && t.h && t.h.gnd){ const v = VB[t.h.vkey], g = EV[v.key].g[0], b = EV[v.key].b[0];
+      const base = L(t.w) + ' is the <b>gerund</b> of ' + L(v.lemma) + ', a verbal noun ("' + esc(g) + '"), in the ' + CASES[t.h.ci] + '. ';
+      rest.push(t.role === 'gpur' ? L('ad') + ' ' + L(t.w) + ': ' + base + L('ad') + ' with the gerund shows purpose: "for ' + esc(g) + '", or "to ' + esc(b) + '".'
+        : t.role === 'gcau' ? L(t.w) + ' ' + L('causā') + ': ' + base + 'With ' + L('causā') + ' (which comes after it) it shows purpose: "for the sake of ' + esc(g) + '", or "to ' + esc(b) + '".'
+        : t.role === 'ggen' ? base + 'The genitive of the gerund goes with ' + L(t.of.w) + ': "' + (t.of.r.hits.some(h => h.adj === 'cupidus') ? 'eager for ' + esc(g) + '", or "eager to ' + esc(b) : esc(nounWord(t.of.r.hits.find(h => h.nom) || t.of.h).replace(/^the /, '')) + ' of ' + esc(g) + '", or "' + esc(nounWord(t.of.r.hits.find(h => h.nom) || t.of.h).replace(/^the /, '')) + ' to ' + esc(b)) + '".'
+        : base + 'An ablative with no preposition tells the means: "by ' + esc(g) + '".'); }
+    else if (t.role === 'sup'){ const v = VB[t.h.vkey]; rest.push(L(t.w) + ' is the <b>supine</b> in -um of ' + L(v.lemma) + ' (made from the fourth principal part, ' + L(v.pp[3]) + '). After a verb of motion, the supine shows purpose: "to ' + esc(EV[v.key].b[0]) + '".'); }
+    else if (t.role === 'sdo'){ rest.push(L(t.w) + ' is accusative: it is the object of the supine ' + L(t.sup.w) + ': "' + esc(ABSTRACT60.includes(t.h.nom) ? NW(t).replace(/^the /, '') : NW(t)) + '".'); }
+    else if (t.role === 'supu'){ const v = VB[t.h.vkey], aEn = (AB[t.of.r.hits.find(h => h.adj && SUPU_ADJ.includes(h.adj)).adj].en || [''])[0]; rest.push(L(t.w) + ' is the <b>supine</b> in -ū of ' + L(v.lemma) + ', used with adjectives like ' + L('facilis') + ' and ' + L('difficilis') + ' (an ablative of respect): "' + esc(aEn) + ' to ' + esc(EV[v.key].b[0]) + '".'); }
+    else if (t.role === 'gpur' || t.role === 'gcau'){}
+    else if (t.role === 'dag'){ const gv = R.verbs.find(v => v.h.ger), b = EV[gv.h.vkey].b[0], must = ({ impf:'had to', fut:'will have to' })[gv.h.tn] || 'must', sEn = t.h.ppers ? PPRON[t.h.ppers].en[0] : NW(t), byEn = t.h.ppers ? PPRON[t.h.ppers].en[3] : NW(t);
+      rest.push(L(t.w) + ' is dative with the passive periphrastic: the <b>dative of agent</b>. It names the person who must do the action: "by ' + esc(byEn) + '". (With other passive verbs the agent is ' + L('ā, ab') + ' with the ablative.) In good English, make it the subject: "' + esc(cap(sEn)) + ' ' + must + ' ' + esc(b) + ' ...".'); }
     else if (t.role === 'dsv'){ const dv = R.verbs.find(v => DSV.includes(v.h.vkey)) || T.find(x => x.role === 'inf' && x.h && DSV.includes(x.h.vkey)); rest.push(L(t.w) + ' is dative because ' + L(dv.w) + ' (' + L(VB[dv.h.vkey].lemma) + ') takes the dative' + (['desum','praesum','praeficio'].includes(dv.h.vkey) ? ' (it is a compound verb)' : '') + '. In English it is usually the direct object: "' + NW(t) + '".'); }
     else if (t.role === 'abv') rest.push(L(t.w) + ' is ablative because ' + L(R.verbs.find(v => v.h.vkey === 'utor' || v.h.vkey === 'potior').w) + ' (' + L(VB[R.verbs.find(v => v.h.vkey === 'utor' || v.h.vkey === 'potior').h.vkey].lemma) + ') takes the ablative, not the accusative. In English it is the direct object: "' + NW(t) + '".');
     else if (t.role === 'dpos') rest.push(L(t.w) + ' is dative with a form of ' + L('sum') + ': the <b>dative of possession</b>. ' + L('Mihi est liber') + ' means "I have a book", so here "' + (t.h.ppers ? ({ '1s':'I have', '2s':'you have', '1p':'we have', '2p':'you have', '3r':'he (she, they) has' })[t.h.ppers] : NW(t) + ' ' + (t.h.num === 'pl' ? 'have' : 'has')) + ' ...".');
@@ -6623,7 +6914,7 @@ function stepsHTML(s){
     else if (t.role === 'vo') rest.push(L(t.w) + ' is vocative, the person being spoken to: "' + esc(t.h.voc || NB[t.h.nom].proper ? NB[t.h.nom].en : NW(t).replace(/^the /, '')) + '". It is set off with a comma.');
     else if (t.role === 'ma') rest.push(L(t.w) + (t.adjTok ? ' with ' + L(t.adjTok.w) : '') + ' is the ablative of manner. It tells how: "with ' + esc(NW(t).replace(/^the /, '')) + '".');
     else if (t.role === 'mi') rest.push(LW(t) + ' is ablative with no preposition, so it tells the means, the thing used: "with ' + esc(NW(t).replace(/^the /, t.h.num === 'sg' && !['auxilium','audācia','cūra'].includes(t.h.nom) ? 'a ' : '')) + '".');
-    else if (t.r && t.r.hits.some(h => h.parse === 'adverb')) rest.push(L(t.w) + ' is an adverb. It tells how, when, or where: "' + esc((t.r.hits.find(h => h.parse === 'adverb').gloss || t.r.hits.find(h => h.parse === 'adverb').en).split(/,| \(/)[0]) + '".');
+    else if (t.role !== 'padj' && t.r && t.r.hits.some(h => h.parse === 'adverb')) rest.push(L(t.w) + ' is an adverb. It tells how, when, or where: "' + esc((t.r.hits.find(h => h.parse === 'adverb').gloss || t.r.hits.find(h => h.parse === 'adverb').en).split(/,| \(/)[0]) + '".');
     else if (t.s === 'cur') rest.push(L(t.w) + ' asks "why?"');
     else if (t.s === 'num') rest.push(L(t.w) + ' asks a question that expects the answer no: "Surely ... not ...?"');
     else if (t.role === 'io') rest.push(LW(t) + ' is dative, the indirect object: "to ' + esc(NW(t)) + '".');
@@ -7000,6 +7291,8 @@ function missCh(r){
   if (r.t === 'f' && r.spec.k === 'advdeg') return 36;
   if (r.t === 'f' && r.spec.k === 'infx') return 39;
   if (r.t === 'f' && r.spec.k === 'ptcx') return 41;
+  if (r.t === 'f' && r.spec.k === 'gdv') return 59;
+  if (r.t === 'f' && (r.spec.k === 'gnd' || r.spec.k === 'sup')) return 60;
   if (r.t === 'f' && r.spec.k === 'subj') return 42;
   if (r.t === 'f' && r.spec.k === 'hort') return 43;
   if (r.t === 'f' && r.spec.k === 'purp') return 44;
@@ -7709,6 +8002,21 @@ const VIEWS = {
       '<p>Also new: ' + L('unde') + ', "from where?"; ' + L('undique') + ', "from all sides"; ' + L('quisque') + ', "each one"; ' + L('uterque') + ', "each of two, both".</p>' + vt(37);
     const SJ = (v, tn) => v.tf[tn].map(f => L(f)).join(', ');
     const IR = k => VB[k].tf.pres.map(f => L(f)).join(', ');
+    SEC[60] = '<h2>Chapter 60: the gerund; the gerundive of purpose; the supine</h2>' +
+      '<h3>The gerund</h3><p>The gerund is a verbal noun, like English <span style="white-space:nowrap">"-ing"</span>: ' + L('pugnandī, pugnandō, pugnandum, pugnandō') + ' ("of fighting, for fighting, fighting, by fighting"). It is neuter singular and has no nominative (use the infinitive for that).</p><ul>' +
+      '<li>Genitive with ' + L('causā') + ' (purpose): ' + L('pugnandī causā') + ', "for the sake of fighting".</li>' +
+      '<li>Genitive with nouns and adjectives: ' + L('cupidus discendī') + ', "eager to learn"; ' + L('facultās fugiendī') + ', "a chance to flee".</li>' +
+      '<li>Accusative with ' + L('ad') + ' (purpose): ' + L('ad pugnandum') + ', "to fight".</li>' +
+      '<li>Ablative of means: ' + L('pugnandō vīcērunt') + ', "they won by fighting".</li></ul>' +
+      '<h3>The gerundive instead of the gerund</h3><p>When the action has an object, Latin usually puts the object in the case the gerund would have, and makes the gerundive agree with it: ' + L('ad urbem capiendam') + ', "to capture the city"; ' + L('pācis petendae causā') + ', "to seek peace".</p>' +
+      '<h3>The supine</h3><p>The supine is made from the fourth principal part. In -um, after a verb of motion, it shows purpose: ' + L('Lēgātī pācem petītum vēnērunt') + ', "The envoys came to seek peace." In -ū, with adjectives like ' + L('facilis') + ' and ' + L('difficilis') + ': ' + L('facile dictū') + ', "easy to say".</p>' +
+      '<p>Also new: ' + L('mereor, mīror, morior, nāscor, revertor') + ' (deponents); ' + L('ineō') + ' (like ' + L('eō') + '); ' + L('dēferō') + ' (like ' + L('ferō') + '); ' + L('ascendō, coniungō, cōnscendō, dēscendō, reficiō, reiciō, repellō, reperiō, taceō, tribuō, vertō') + '.</p>' + vt(60);
+    SEC[59] = '<h2>Chapter 59: the gerundive; the passive periphrastic; the dative of agent</h2>' +
+      '<h3>The gerundive (future passive participle)</h3><p>Add ' + L('-ndus, -nda, -ndum') + ' to the present stem: ' + L('portandus, monendus, dūcendus, capiendus, audiendus') + '. It means "to be ___" and declines like ' + L('bonus') + ', agreeing with its noun.</p>' +
+      '<h3>The passive periphrastic</h3><p>The gerundive with a form of ' + L('sum') + ' says what <b>must</b> be done: ' + L('Urbs capienda est') + ', "The city must be taken." With ' + L('erat') + ' it means "had to", with ' + L('erit') + ' "will have to".</p>' +
+      '<h3>The dative of agent</h3><p>With the passive periphrastic, the person who must act is in the <b>dative</b>, not ' + L('ā, ab') + ' with the ablative: ' + L('Urbs mīlitibus capienda est') + ', "The city must be taken by the soldiers", or better, "The soldiers must take the city."</p>' +
+      '<p>A verb with no object uses the neuter, impersonally: ' + L('Nōbīs pugnandum est') + ', "We must fight" (literally "it must be fought by us").</p>' +
+      '<p>Also new: ' + L('inde') + ', "from there; then"; ' + L('beneficium, cohors, custōs, equitātus, explōrātor, īnfāns, lacrima, laus, lītus, magistrātus, mulier, opīniō, plēbs, rēmus, saxum, uxor') + '.</p>' + vt(59);
     SEC[58] = '<h2>Chapter 58: indefinite pronouns; relative clauses of characteristic</h2>' +
       '<h3>Indefinite pronouns</h3><ul><li>' + L('aliquis, aliquid') + ', "someone, something" (pronoun); ' + L('aliquī, aliqua, aliquod') + ', "some" (adjective): ' + L('Aliquis venit') + ', "Someone is coming."</li>' +
       '<li>' + L('quis, quid') + ' after ' + L('sī, nisi, num, nē') + ' means "anyone, anything": ' + L('Sī quis venit') + ', "if anyone comes". (After sī, nisi, num, and nē, ' + L('ali-') + ' takes a holiday.)</li>' +
@@ -8014,11 +8322,15 @@ const VIEWS = {
 };
 
 /* ---------- render and events ---------- */
+let modeOpen = false;
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modeOpen){ modeOpen = false; render(); const mb = $('#modeopen'); if (mb) mb.focus(); } });
 function render(focus){
   drawChapters();
   document.querySelectorAll('[data-ch]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.ch === 'all' ? isAll() : !isAll() && state.chs.includes(+b.dataset.ch))));
   const chn = $('#chnote'); if (chn) chn.textContent = wordsOnly() ? 'Word list only so far.' : '';
   document.querySelectorAll('[data-mode]').forEach(b => { if (b.dataset.mode === state.mode) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  { const mb = $('#modeopen'), mn = $('#modes'), cur = $('#modes [data-mode="' + state.mode + '"]'), mc = $('#modecur');
+    if (mn) mn.hidden = !modeOpen; if (mb) mb.setAttribute('aria-expanded', String(modeOpen)); if (mc) mc.textContent = cur ? ({ review:'Review' })[state.mode] || cur.textContent : ''; }
   const sk = $('#streak'); if (sk) sk.innerHTML = streakHTML();
   const rt = $('.tabs [data-mode="review"]');
   if (rt){ const n = missedHere().length; rt.innerHTML = 'Review' + (n ? '<span class="badge"><span class="sr"> (</span>' + n + '<span class="sr"> to review)</span></span>' : ''); }
@@ -8212,6 +8524,7 @@ document.addEventListener('click', e => {
     S = F = C = Q = R = T = KD = BP = null; save(); return render('[data-ch="' + c + '"]');
   }
   if (t.dataset.wo){ goWords(+t.dataset.wo); return; }
+  if (t.id === 'modeopen'){ modeOpen = !modeOpen; render(); const mf = modeOpen ? $('#modes [aria-current="page"]') : $('#modeopen'); if (mf) mf.focus(); return; }
   if (t.id === 'chopen' || t.dataset.chclose){ state.chOpen = !state.chOpen; drawChapters(); const f = state.chOpen ? $('#chgrid [data-ch="all"]') : $('#chopen'); if (f) f.focus(); return; }
   if (t.dataset.vm){ state.vm = t.dataset.vm; save(); return render('[data-vm="' + t.dataset.vm + '"]'); }
   if (t.dataset.star){
@@ -8307,7 +8620,7 @@ document.addEventListener('click', e => {
     state.chs = [+t.dataset.go]; state.chOpen = false; S = F = C = Q = R = T = KD = BP = null; Y = G = null; state.mode = 'sentences'; save();
     render('[data-mode="sentences"]'); window.scrollTo(0, 0); return;
   }
-  if (t.dataset.mode){ if (t.dataset.mode === 'review') R = null; if (F) F.back = null; state.mode = t.dataset.mode; save(); return render(); }
+  if (t.dataset.mode){ modeOpen = false; if (t.dataset.mode === 'review') R = null; if (F) F.back = null; state.mode = t.dataset.mode; save(); return render(); }
   if (t.dataset.set){
     if (state.mode === 'sentences'){
       const keep = S && S.gen ? [S.gRight, S.gTried] : null;
